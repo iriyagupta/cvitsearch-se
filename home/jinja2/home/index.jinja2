@@ -1,0 +1,334 @@
+{% extends 'base.jinja2' %}
+
+
+<!-- Google transcript -->
+
+{% block head %}
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script src="{{ static('js/transliterate.js') }}"></script>  
+{% endblock %}
+
+
+<!-- main content -->
+
+{% block content %}
+
+<!-- Search Bar with choices -->
+
+<main role="main" class="container-fluid main-container">
+<div class="row" style="margin-top: 20px;">
+  <div class="col-12">
+    <p  class="text-center font-weight-light" style="margin-bottom:0.3rem;font-size:0.9rem;">
+      {{ total }} items hosted on CVITSearch
+    </p>
+  </div>
+</div>
+  <div class="row">
+  <div class="col-3">
+  </div>
+    <div class="col-6 text-center">
+      <form action="{{ url('search') }}" method="GET">
+        <div class="row">
+          <div class="input-group input-group col-md-6 first">
+            <!-- Book input -->
+            <input type="text" name="q" value="" class="form-control" placeholder="Enter the book title, isbn, author or search key" maxlength="255" id="id_title" autofocus="">
+          </div>
+          <div class="input-group col-2 second" >
+            <select id="language" name="language" class="form-control" onchange="javascript:languageChangeHandler()" style="max-width: 100%; display: inline-block;">
+              <option value="hi">Hindi</option>
+              <option value="en">English</option>
+              <option value="bn">Bengali</option>
+              <option value="sa">Sanskrit</option>
+              <option value="te">Telugu</option>
+            </select>
+          </div>
+
+
+          <div class="input-group col-2 third">
+            <select name="parameter" id="type" class="form-control">
+              <option value="content" id="content">Content</option>
+              <option value="title" id="title">Title</option>
+              <option value="isbn" id="isbn">ISBN</option>
+              <option value="author" id="author">Author</option>
+            </select>
+            <input type="hidden" > 
+          </div>
+
+
+          <div class="input-group-append col-2 fourth text-left">
+            <!-- Submit button -->
+            <button class="btn btn-outline-info" type="submit">Search</button>
+            <!-- <input type="submit" value="Submit" class="btn btn-success"> -->
+          </div>
+        </div>
+      </form>
+    </div> 
+    <div class="col-3">
+  </div>
+
+  </div>
+
+
+<hr>
+
+
+
+<div class="row" style="margin-top:6rem;">
+
+
+
+      <div class="col-3 " style="padding-left:150px;">
+
+          <div id="filter_div">
+              <div class="row filter-heading-row">
+                  <div class="col">
+                    <h5 class="filter-heading">Search Options</h5>
+                  </div>
+                  <div class="col my-auto" style="padding-right: 15px;">
+                    <a href="javascript:void(0)"
+                       onclick='clearFilterParameters()'>
+                      <button class="btn clear-btn float-right">
+                       CLEAR ALL
+                      </button>
+                    </a>
+                  </div>
+              </div>
+
+              <hr class="hr-sidebar">
+
+              <div class="row filter-subheading-row">
+                <div class="col">
+                  <h6 class="filter-subheading">Educational Category &mdash;</h6>
+                </div>
+                <div class="col" style="padding-right: 15px;">
+                  <a href="javascript:void(0)"
+                     onclick='removeURLParameter("index_genre")'>
+                    <button class="btn-sm clear-btn float-right">
+                      CLEAR
+                    </button>
+                  </a>
+                </div>
+              </div>
+
+              <ul class="filter-list" id="filter_genre_div">
+                {% for genre,count in zipped %}
+                <li class="filter-item" id="filter_by_genre_{{ genre }}">
+                  <a href="{{ url("search") }}?index_genre={{ genre }}"
+                     onclick='updateQueryStringParameter("index_genre", "{{ genre }}" )'>
+                    <div class="row align-items-center" style="padding-right: 10px;">
+                      <div class="col-9">
+                        {{ genre }}
+                      </div>
+                    <div class="col-3 text-right" style="padding-right: 20px;">
+                        <div class="count-box">
+                        {{ count }}
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+
+                {% endfor %}
+              </ul>
+
+            <hr class="hr-sidebar">
+
+              <div class="row filter-subheading-row">
+                <div class="col">
+                  <h6 class="filter-subheading">Featured Sources  &mdash;</h6>
+                </div>
+                <div class="col" style="padding-right: 15px;">
+                  <a href="javascript:void(0)"
+                     onclick='removeURLParameter("index_source")'>
+                    <button class="btn-sm clear-btn float-right">
+                      CLEAR
+                    </button>
+                  </a>
+                </div>
+              </div>
+
+              <ul class="filter-list" id="filter_source_div">
+                {% for source,count in zipped_list %}
+                <li class="filter-item" id="filter_by_source_{{ source }}">
+                  <a href="{{ url("search") }}?index_source={{ source }}"
+                     onclick='updateQueryStringParameter("index_source", "{{ source }}" )'>
+                    <div class="row align-items-center" style="padding-right: 10px;">
+                      <div class="col-9">
+                        {{ source }}
+                      </div>
+                    <div class="col-3 text-right" style="padding-right: 20px;">
+                        <div class="count-box">
+                        {{ count }}
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+
+                {% endfor %}
+              </ul>
+
+
+          </div>
+
+      </div>
+
+    <div class="col-6" >
+     
+    </div>
+
+
+
+    <div class="col-3">
+      <div class="card border-light mb-3" style="max-width:18rem; max-height:550px;overflow-y:auto;">
+          <div class="card-header bg-success text-white">Important Announcements and Updates</div>
+            <div class="card-body pt-3 small text-dark">
+                <marquee behavior="scroll" direction="up" scrollamount="5">
+                  {% for announcement in ann %}
+
+                  <h6 class="card-title"><strong> {{ announcement.ann_title }}</strong></h6>
+                  
+                  <p class="card-text">{{ announcement.description }}</p>
+                  <p class="card-text">{{ announcement.timestamp }}</p>
+                
+                  {% endfor %}
+                </marquee>
+            </div>
+      </div>
+    </div>
+
+</div>
+
+</div>
+
+</main>
+{% endblock %}
+
+
+
+
+
+{% block foot %}
+
+<script>
+$(document).ready(function() {
+  // filter by genre
+  genre = get('index_genre');
+  if (genre !== undefined) {
+    filter_genre_id = '#filter_by_genre_' + genre;
+    $('#filter_genre_div li').removeClass('filter-active');
+    $(filter_genre_id).addClass('filter-active');
+  };
+  // filter by source
+  source = get('index_source');
+  if (source !== undefined) {
+    filter_source_id = '#filter_by_source_' + source;
+    $('#filter_source_div li').removeClass('filter-active');
+    $(filter_source_id).addClass('filter-active');
+  };
+  
+});
+function get(name) {
+   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+};
+// Credits: https://stackoverflow.com/a/6021027/3187043
+function updateQueryStringParameter(key, value) {
+  var url = window.location.href;
+  console.log(url);
+  // remove page number
+  // prefer to use l.search if you have a location/link object
+  var urlparts= url.split('?');
+  console.log(urlparts);
+  var new_url;
+  if (urlparts.length>=2) {
+      var pg_prefix= encodeURIComponent('page')+'=';
+      var pars= urlparts[1].split(/[&;]/g);
+      //reverse iteration as may be destructive
+      for (var i= pars.length; i-- > 0;) {
+          //idiom for string.startsWith
+          if (pars[i].lastIndexOf(pg_prefix, 0) !== -1 ) {
+              pars.splice(i, 1);
+          }
+      }
+      new_url = urlparts[0]+(pars.length > 0 ? '?' + pars.join('&') : '');
+  }
+  else {
+      new_url = url;
+  }
+  var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+  var separator = new_url.indexOf('?') !== -1 ? "&" : "?";
+  if (new_url.match(re)) {
+    window.location = new_url.replace(re, '$1' + key + "=" + value + '$2');
+  }
+  else {
+    window.location = new_url + separator + key + "=" + value;
+  }
+};
+// Credits: https://stackoverflow.com/a/1634841/3187043
+function removeURLParameter(parameter) {
+    var url = window.location.href
+    var is_param_present = false;
+    // prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+        var prefix= encodeURIComponent(parameter)+'=';
+        var pg_prefix= encodeURIComponent('page')+'=';
+        var pars= urlparts[1].split(/[&;]/g);
+        //reverse iteration as may be destructive
+        for (var i= pars.length; i-- > 0;) {
+            //idiom for string.startsWith
+            if (pars[i].lastIndexOf(prefix, 0) !== -1 ) {
+                is_param_present = true;
+                pars.splice(i, 1);
+            }
+        }
+        if (is_param_present === true) {
+          for (var i= pars.length; i-- > 0;) {
+              //idiom for string.startsWith
+              if (pars[i].lastIndexOf(pg_prefix, 0) !== -1 ) {
+                  pars.splice(i, 1);
+              }
+          }
+        }
+        window.location = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : '');
+        return;
+    }
+    return;
+};
+function clearFilterParameters() {
+    var url = window.location.href
+    var is_any_filter_param_present = false;
+    // prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+        var genre_prefix= encodeURIComponent('index_genre')+'=';
+        var source_prefix= encodeURIComponent('index_source')+'=';
+        var lang_prefix= encodeURIComponent('lang')+'=';
+        var tag_prefix= encodeURIComponent('tag')+'=';
+        var pg_prefix= encodeURIComponent('page')+'=';
+        var pars= urlparts[1].split(/[&;]/g);
+        //reverse iteration as may be destructive
+        for (var i= pars.length; i-- > 0;) {
+            //idiom for string.startsWith
+            if (pars[i].lastIndexOf(lang_prefix, 0) !== -1 ||
+                pars[i].lastIndexOf(tag_prefix, 0) !== -1 ) {
+                is_any_filter_param_present = true;
+                pars.splice(i, 1);
+            }
+        }
+        if (is_any_filter_param_present) {
+          for (var i= pars.length; i-- > 0;) {
+              //idiom for string.startsWith
+              if (pars[i].lastIndexOf(pg_prefix, 0) !== -1) {
+                  pars.splice(i, 1);
+              }
+          }
+        }
+        window.location = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : '');
+        return;
+    }
+    return;
+};
+</script>
+{% endblock %}

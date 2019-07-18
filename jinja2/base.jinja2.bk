@@ -1,0 +1,158 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+  <title>CVITSearch{% if page_title %} | {{ page_title }}{% endif %}</title>
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no, user-scalable=no">
+
+  <!-- Stylesheets -->
+  <link href="{{ static('images/favicon.ico') }}" rel="icon" type="image/png">
+  <link href="{{ static('vendor/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
+  <link href="{{ static('vendor/noty/lib/noty.css') }}" rel="stylesheet">
+  <link href="{{ static('vendor/animate.css/animate.min.css') }}" rel="stylesheet">
+  <link href="{{ static('css/app.css') }}" rel="stylesheet">
+  <link href="{{ static('css/bootstrap-mod.css') }}" rel="stylesheet">
+
+
+  <script>
+    if (!(document.addEventListener)) {
+      alert(
+        "You have to upgrade your browser or use another modern browser to view and use this portal correctly."
+      );
+    }
+  </script>
+
+  <!-- Additional Headers -->
+  {% block head %}{% endblock %}
+</head>
+
+
+<body>
+  <header>
+    <!-- Navigation -->
+    <!-- Nav bar classes taken from getboostrap.com/ source code -->
+    <nav class="navbar navbar-expand-md navbar-dark bd-navbar">
+
+      <!-- Home button -->
+      <a class="navbar-brand" href="{{ url('home') }}">CVITSearch</a>
+
+      <!-- Navbar collapse -->
+      <button
+          class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+
+          
+        <!-- Datasets -->
+       
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Datasets
+          </a>
+          <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+            <a class="dropdown-item disabled" href="#">IIITH Dataset</a>
+            <a class="dropdown-item" href="#">British Library</a>
+          </div>
+        </li>
+
+        <!-- Projects -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Related Projects
+          </a>
+          <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+            <a class="dropdown-item" href="http://10.4.16.66/beta">OCRWeb by CVIT</a>
+          </div>
+        </li>
+
+
+        <!-- Demo -->
+        <li class="nav-item">
+          <!-- TODO Fix this -->
+          <a class="nav-link" href="{{ url('demo') }}">
+          Demo<span class="sr-only">(current)</span>
+        </a>
+        </li>
+
+        <!-- Contact -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url('contact') }}">
+          Contact<span class="sr-only">(current)</span>
+        </a>
+        </li>
+
+     
+
+         
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- No-Script to warn of disabled Javascript in browser -->
+  <!--     <noscript>
+    <div class="row">
+      <div class="small-10 column small-centered" style="line-height: 1.6; padding-top: 15px;">
+        <div data-alert class="alert-box info radius center-justified">It is necessary to enable JavaScript
+          for this site to work as intended. Here are the
+            <a href="http://www.enable-javascript.com" target="_blank">instructions how to enable JavaScript
+                in your web browser</a>. If you are using a JS blocking plugin, please allow JS on this site.
+        </div>
+      </div>
+    </div>
+  </noscript> -->
+
+  <!-- Page Content -->
+  <main role="main" class="container main-container" style="margin-top: 3.5rem;">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- TODO Fix this -->
+  <!-- Scroll-to-top button -->
+  <!-- <a href="#" class="back-to-top"><i class="fa fa-arrow-circle-up fa-3x"></i></a> -->
+
+
+  <footer class="footer">
+    <div class="container" style="border-top: 1pt solid rgba(0, 0, 0, 0.1); text-align: center;">
+      <span class="text-muted">
+        &copy; Center for Visual Information Technology (CVIT), IIIT Hyderabad.
+      </span>
+    </div>
+  </footer>
+
+  <!-- JS Libraries -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js" integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l" crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.js"></script>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+  <!-- TODO Why is this needed? -->
+  <!-- <script src="{{ static('vendor/foundation/js/what-input.min.js') }}"></script> -->
+  <script src="{{ static('vendor/noty/lib/noty.js') }}"></script>
+  <script src="{{ static('vendor/zoom/dist/easyzoom.js') }}"></script>
+  <script src="{{ static('js/app.js') }}"></script>
+  <script src="{{ static('vendor/bootstrap/js/bootstrap.js') }}"></script>
+  <!-- <script src="{{ static('vendor/bootstrap/js/bootstrap.bundle.js') }}"></script> -->
+  {% block foot %}{% endblock %} {% if messages(request) %}
+  <script>
+    $(document).ready(function() {
+      {% for message in messages(request) %}
+      flashNoty('{{ message.tags }}', '{{ message|safe }}'); {% endfor %}
+    });
+  </script>
+  {% endif %}
+</body>
+
+</html>

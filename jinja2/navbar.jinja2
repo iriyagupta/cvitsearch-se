@@ -1,0 +1,382 @@
+{% block head %}
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="{{ static('css/style.css') }}">
+
+{% endblock %}
+
+
+<header>
+  <!-- Navigation -->
+  <!-- Nav bar classes taken from getboostrap.com/ source code -->
+
+  <nav class="navbar navbar-expand-md navbar-dark bd-navbar" id="top_navbar">
+
+    <!-- Home button -->
+    <a class="navbar-brand" href="{{ url('home') }}"> CVITSearch </a>
+
+    <!-- Navbar collapse -->
+    <button
+        class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      
+      <ul class="navbar-nav mr-auto">
+
+      {% if request.user.is_authenticated %}
+
+        <!-- Datasets -->
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Featured Datasets
+          </a>
+          <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+            <a class="dropdown-item" href="{{ url('list1') }}">British Library</a>
+            <a class="dropdown-item" href="{{ url('list2') }}">IIITH Dataset</a>
+            
+          </div>
+        </li>
+
+      {% else %}
+
+      <!-- Datasets -->
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Featured Datasets
+          </a>
+          <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+            <a class="dropdown-item disabled" href="#">British Library</a>
+            <a class="dropdown-item disabled" href="#">IIITH Dataset</a>
+            
+          </div>
+        </li>
+
+      {% endif %}
+
+      </ul>
+
+      <!-- Navbar rightside -->
+      <ul class="nav navbar-nav navbar-right">
+
+
+        {% if request.user.is_authenticated %}
+
+          <!-- If user is uthenticated -->
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#instructions">
+            Instructions for Admin <span class="sr-only">(current)</span>
+            </a>
+
+            <!-- Modal -->
+            <div class="modal fade bd-example-modal-lg" id="instructions" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+ 
+                  <div class="modal-header">
+                    <h5 class="modal-title w-100 text-center" id="exampleModalLabel"> <i class="fa fa-info" aria-hidden="true"></i>  Adding Books</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body" style="border-bottom:none;">
+                    <ul style="list-style-type: disc;" class="instructions">
+                      <li style="margin-bottom:1.2rem;">
+                        <p class="instruction-list" style="font-size: 0.8rem;">
+                          Login to your account using the given id and pasword for your admin account. As you will login, you can see
+                          the groups and users which admin can add more depending upon the required task. The list of books and pages
+                          is also visible. Under the Recent Actions tab you can see what changes have been made to the list of the
+                          recent books whether added, removed or edited the details within them.
+                        </p>
+                          <img src="media/images/instr/1.png" alt="2" class="modal-img-cont" style="max-width: 90%;display: block; margin-left: auto; margin-right: auto;">
+                      </li>
+                      <li style="margin-bottom:1.2rem;">
+                        <p class="instruction-list" style="font-size: 0.8rem;">
+                          Click on the Books under Home tab and this page will pop up. Youcan see the already added books and can delete
+                          them using the Actions dropdown. The Add Book option on the rightmost top will help in adding more books to your
+                          list.
+                        </p>
+                          <img src="media/images/instr/2.png" alt="3" class="modal-img-cont" style="max-width: 90%;display: block; margin-left: auto; margin-right: auto;">
+                      </li>
+                      <li style="margin-bottom:1.2rem;">
+                        <p class="instruction-list" style="font-size: 0.8rem;">
+                          While adding, the bold attributes are required to be added for a particluar book. Add the title, number of pages,
+                          ISBN, etc and other metadata in the emty fields. For adding the values to the book content and book pdf field , 
+                          make sure the book you are adding has two compressed folders inside it. Ex. If the book name is Nursery Rhymes,
+                          the main folder should contain the nursery_rhymes_imgs.zip and nursery_rhymes_txt.zip inside it.
+                          <br>
+                          The following should be the model tree :
+                          <br>
+                          <img src="media/images/instr/6.png" alt="4" class="modal-img-cont" style="max-width: 40%;display: block; margin-left: auto; margin-right: auto;margin-bottom:0.8rem;">
+                          <i style="color:red;">Remember that the number of the images and text files in both the folder should be the same.
+                          Apart from that the image files should be of .jpg format and the text should be of .jpg.txt format.</i> It is easier
+                          that way to update the searchengine data.
+                        </p>
+                          <img src="media/images/instr/3.png" alt="4" class="modal-img-cont" style="max-width: 90%;display: block; margin-left: auto; margin-right: auto;">
+                      </li>
+                      <li>
+                        <p class="instruction-list" style="font-size: 0.8rem;">
+                          You can save and can go back to the main admin page where in the book tab, updated book can be viewed. After that,
+                          to check whether the page content have been added or not, go to the Pages section under the Home tab and the added
+                          pages can be viewed. 
+                        </p>
+                          <img src="media/images/instr/5.png" alt="3" class="modal-img-cont" style="max-width: 90%;display: block; margin-left: auto; margin-right: auto;">
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="modal-footer text-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+
+        {% else %}
+
+
+        <!-- Help -->
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#help">
+            Help<span class="sr-only">(current)</span>
+          </a>
+
+          <!-- Modal -->
+
+            <div class="modal fade bd-example-modal-lg" id="help" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" style="border-bottom:none;">
+                  <div class="modal-header" style="border-bottom:none;">
+                    <h5 class="modal-title w-100 text-center" id="exampleModalLabel"> <i class="fa fa-question" aria-hidden="true" style="margin-right:1rem;"></i> Usage</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body" style="border-bottom:none;">
+                    <ul style="list-style-type: disc;" class="help">
+                      <li style="margin-bottom:1.2rem;">
+                        <p class="help-list" style="font-size: 0.8rem;">
+                          Choose the desired language from the dropdown menu and type in the desired
+                          query in the search bar provided. This search engine by default searches in English
+                          language. After choosing the language, type your query. At the end of the query
+                          <i style="color:red;">"DO NOT FORGET TO GIVE A SPACE" </i>  in order to let the 
+                          language toggle properly.
+                          <br>
+                          [Credits : <a href="https://developers.google.com/transliterate/v1/getting_started">
+                          Google Transliteration API</a> for open source developers.]
+                        </p>
+                          <img src="media/images/2.png" alt="2" class="modal-img-cont" style="max-width: 90%;display: block; margin-left: auto; margin-right: auto;">
+                      </li>
+                      <li style="margin-bottom:1.2rem;">
+                        <p class="help-list" style="font-size: 0.8rem;">
+                          Choose the search type/filter from the dropdown menu. Currently available search
+                          filters are ISBN based, Title of the books, their author and their content based.
+                          This search engine by default searches on the basis of the title of the book 
+                          as it is associated with the OCRWeb portal by CVIT,IIITH. After choosing the filter,
+                          proceed to search and click on the search button to view results.
+                        </p>
+                          <img src="media/images/3.png" alt="3" class="modal-img-cont" style="max-width: 90%;display: block; margin-left: auto; margin-right: auto;">
+                      </li>
+                      <li>
+                        <p class="help-list" style="font-size: 0.8rem;">
+                          Finally you can view the results ofthe searched query. Here for example, the user
+                          search <i style="color:red;">Munshi Prem Chand</i> in the search bar and language 
+                          was chosen as English and filter as Author. The available books in the database
+                          were only <i style="color:red;">Godan</i>.Therefore, the results were for Godan. 
+                          User can download and read complete book by clicking on <i style="color:red;">Read
+                          More</i> link in the abstract of the book. One thing which can be future work is 
+                          word spotting amongst the pages of the generated results in certain book.
+                        </p>
+                          <img src="media/images/4.png" alt="4" class="modal-img-cont" style="max-width: 90%;display: block; margin-left: auto; margin-right: auto;">
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="moreDropdown" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          More Information
+          </a>
+          <div class="dropdown-menu" aria-labelledby="moreDropdown">
+
+            <a class="dropdown-item" href="#disclaimer" data-toggle="modal" data-target="#disclaimer">Disclaimer</a>
+              
+            <a class="dropdown-item" href="#about" data-toggle="modal" data-target="#about">About</a>
+            
+          </div>
+
+          <!-- Modal1 -->
+
+          <div class="modal fade" id="disclaimer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content" style="border-bottom:none;">
+                  <div class="modal-header" style="border-bottom:none;">
+                    <h5 class="modal-title w-100 text-center" id="exampleModalLabel"> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Disclaimer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body" style="border-bottom:none;">
+                    
+                    <p class="help-list" style="font-size: 0.8rem;">
+
+                      CVITSearch is an amalgamation of contributions made by British Library and IIITH Library
+                      in terms of Indic Scripts. Almost all these contents are taken from reliable websites and 
+                      books. The responsibility for authenticity, relevance, completeness, accuracy, reliability
+                      and suitability of these contents rests with respective organization from where the contents
+                      are sourced from and CVITSearch takes no responsibility for these. Efforts are being made to
+                      keep this search portal working smoothly and without any interruptions. However, if there are
+                      any technical issues, they will be resolved soon. This portal is still under development hence
+                      if there are user issues they will be taken care of with time.
+
+                    </p>
+                          
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal2 -->
+
+
+
+            <div class="modal fade" id="about" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content" style="border-bottom:none;">
+                  <div class="modal-header" style="border-bottom:none;">
+                    <h5 class="modal-title w-100 text-center" id="exampleModalLabel"> <i class="fa fa-info" aria-hidden="true"></i>  About CVITSearch</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body" style="border-bottom:none;">
+
+                    
+                    <p class="help-list" style="font-size: 0.8rem;">
+
+                      CVIT,IIITH has initiated this Digital Library of India to develop a framework which encompasses
+                      learning resources in Indic Scripts with searching facility, as an academic research project.
+                      The design of the platform is such that these learning resources can easily be found out by the
+                      users with minimum efforts and time. Currently the search is based in 5 different Indian languages
+                      It is being arranged to provide support for all academic levels including researchers and life-long
+                      learners, all disciplines, all popular form of access devices. It is an extension of OCRWeb project
+                      by CVIT which takes printed Indic Script documents and processes them for character recoginition. 
+                      It is being developed to enable people to learn and prepare from best practices from all over the 
+                      world and to facilitate researchers to perform inter-linked exploration from multiple sources. 
+                      The pilot project is devising a framework that is being scaled up with respect to content volume 
+                      and diversity to serve all levels and disciplines of learners. It is being developed at Center for
+                      Visual Information and Technology, International Institute of Information and Technology Hyderabad
+                      and is being supported by British Library and IIITH Library currently.                      
+                    </p>
+                          
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+        </li>
+
+
+        {% endif %}
+
+      
+        <!-- Projects -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Related Projects
+          </a>
+          <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+            <a class="dropdown-item" href="http://10.4.16.66/beta">OCRWeb by CVIT</a>
+          </div>
+        </li>
+
+        <!-- Contact -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url('contact') }}">
+          Contact<span class="sr-only">(current)</span>
+          </a>
+        </li>
+
+
+
+      {% if request.user.is_authenticated %}
+        <!-- Login -->
+
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="{{ url('admin:index') }}">
+            Admin <span class="sr-only">(current)</span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="projectsDropdown">
+            <a class="dropdown-item disabled" href="#">Profile</a>
+            <a class="dropdown-item" href="{{ url('home') }}">Logout</a>
+          </div>
+
+        </li>
+
+      {% else %}
+
+
+      <li class="nav-item">
+          <a class="nav-link" href="{{ url('admin:index') }}">
+          Login<span class="sr-only">(current)</span>
+          </a>
+      </li>
+
+      {% endif %}
+        
+      <li class="nav-item">
+          <a class="nav-link" href="{{ url('stat') }}">
+          Stat<span class="sr-only">(current)</span>
+          </a>
+      </li>
+        
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+
+
+<!-- No-Script to warn of disabled Javascript in browser -->
+<!--     <noscript>
+  <div class="row">
+    <div class="small-10 column small-centered" style="line-height: 1.6; padding-top: 15px;">
+      <div data-alert class="alert-box info radius center-justified">It is necessary to enable JavaScript
+        for this site to work as intended. Here are the
+          <a href="http://www.enable-javascript.com" target="_blank">instructions how to enable JavaScript
+              in your web browser</a>. If you are using a JS blocking plugin, please allow JS on this site.
+      </div>
+    </div>
+  </div>
+</noscript> -->

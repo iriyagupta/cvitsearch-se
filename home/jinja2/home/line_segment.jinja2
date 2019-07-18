@@ -1,0 +1,82 @@
+{% extends 'base.jinja2' %}
+
+
+
+{% block head %}
+
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script src="{{ static('js/transliterate.js') }}"></script>
+  <link rel="stylesheet" href="{{ static('css/style1.css') }}">
+  
+{% endblock %}
+
+
+
+
+{% block content %}
+
+
+<div class="container">
+{% if page_image.0 %}
+<table class="table content" id="test_table2" >
+	<thead>
+		<tr>
+			<th>Image</th> 
+			<th>Content</th>
+		</tr>
+	</thead>
+	<tbody>
+			<tr>
+        
+  				<td>
+            <img src="{{ page_image.0 }}" alt="sample">
+          </td>
+        
+         
+				<td>{{ content.0|safe }}</td>
+			</tr>
+			
+	</tbody>
+</table>
+{% else %}
+
+<img src="media/images/page-under-construction.gif" alt="sample">
+ 
+{% endif %}
+</div>
+
+<div class="row">
+	<div class="col-3" style="max-width: 500px; padding: 20px;">
+		{% if content.has_other_pages() %}
+		  <ul class="pagination">
+		    {% if content.has_previous() %}
+		      <li>
+		      	<a href="?page={{ content.previous_page_number() }}&bookid={{ bookid }}&q={{ q }}">&laquo;</a>
+		      </li>
+		    {% else %}
+		      <li class="disabled"><span>&laquo;</span></li>
+		    {% endif %}
+			    {% for i in content.paginator.page_range %}
+			      {% if content.number == i %}
+			        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+			      {% else %}
+			        <li>
+			        	<a href="?page={{ i }}&bookid={{ bookid }}&q={{ q }}">{{ i }}</a>
+			        </li>
+			      {% endif %}
+			    {% endfor %}
+		    {% if content.has_next() %}
+		      <li>
+		      	<a href="?page={{ content.next_page_number() }}&bookid={{ bookid }}&q={{ q }}">&raquo;</a>
+		      </li>
+		    {% else %}
+		      <li class="disabled"><span>&raquo;</span></li>
+		    {% endif %}
+		  </ul>
+		{% endif %}
+	</div>
+</div>
+
+
+
+{% endblock %}

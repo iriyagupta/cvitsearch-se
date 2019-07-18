@@ -1,0 +1,360 @@
+{% extends 'base.jinja2' %}
+
+
+
+
+{% block head %}
+  <link rel="stylesheet" href="{{ static('css/style.css') }}">
+{% endblock %}
+
+
+
+{% block content %}
+
+
+
+<div class="row">
+  <div class="col-3" style="max-width: 300px; padding: 20px;">
+    <ul class="pagination">
+      {% if dataset2.has_previous() %}
+      <li class="page-item">
+          <a class="page-link" href="?page={{ "1" }}">&laquo;</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ dataset2.previous_page_number() }}">&lsaquo;</a>
+        </li>
+
+      {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&laquo;</a>
+        </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&lsaquo;</a>
+        </li>
+      {% endif %}
+
+
+      
+        <li class="page-item active">
+         <span class="page-link">
+          {{ dataset2.number }} of {{ dataset2.paginator.num_pages }}
+           <span class="sr-only">(current)</span>
+        </span>
+        </li>
+      
+
+      {% if dataset2.has_next() %}
+
+        <li class="page-item">
+          <a class="page-link" href="?page={{ dataset2.next_page_number() }}">&rsaquo;</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ dataset2.paginator.num_pages }}">&raquo;</a>
+        </li>
+
+      {% else %}
+         <li class="page-item disabled">
+          <a class="page-link" href="#">&rsaquo;</a>
+        </li>
+        <li class="page-item disabled">
+          <a class="page-link" href="#">&raquo;</a>
+        </li>
+      {% endif %}
+
+
+    </ul>
+  </div>
+
+
+  <div class="col-3">
+      <!-- Check for lang parameter in URL -->
+      {% if request.GET.lang %}
+      <input type="hidden" name="lang" value="{{ request.GET.lang }}"/>
+      {% endif %}
+  </div>
+
+
+
+</div>
+
+
+<div class="row">
+  <div class="col text-center" style="max-width: 300px; padding: 20px;">
+    <h3>IIITH Library</h3>
+  </div>
+</div>
+
+<div class="row" style="margin-bottom: 100px;">
+  <div class="col-9">
+    <div class="table-responsive">
+      <table class="table table-sm table-striped">
+        <thead>
+        <tr>
+          <th scope="col" class="table-header text-center">Book Title</th>
+          <th scope="col" class="table-header text-center">Author</th>
+          <th scope="col" class="table-header text-center">Language</th>
+          <th scope="col" class="table-header text-center">Page Count</th>
+        </tr>
+        </thead>
+        <tbody>
+          {% for res in dataset2 %}
+          {{ res }}
+          <tr>
+            <!-- Title -->
+            <td class="table-content" style="width: inherit; hyphens: auto;">
+              {{ res.title }}
+            </td>
+
+            
+            <!-- Author -->
+            <td class="table-content">
+              {{ res.author }}
+            </td>
+
+
+            <!-- Language -->
+            <td class="table-content">
+              {{ res.language }}
+            </td>
+
+
+            <!-- Number of Pages -->
+            <td class="table-content">
+              {{ res.numpages }}
+            </td>
+
+          </tr>
+      
+        {% endfor %}
+       
+        </tbody>
+      </table>
+    </div>
+  </div>  
+
+
+
+  <div class="col-3">
+    <div id="filter_div">
+      <div class="row filter-heading-row">
+        <div class="col">
+          <h5 class="filter-heading">Filters</h5>
+        </div>
+        <div class="col my-auto" style="padding-right: 15px;">
+          <a href="javascript:void(0)"
+             onclick='clearFilterParameters()'>
+            <button class="btn clear-btn float-right">
+             CLEAR ALL
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <hr class="hr-sidebar">
+
+      <div class="row filter-subheading-row">
+        <div class="col">
+          <h6 class="filter-subheading">Language &mdash;</h6>
+        </div>
+        <div class="col" style="padding-right: 15px;">
+          <a href="javascript:void(0)"
+             onclick='removeURLParameter("lang")'>
+            <button class="btn clear-btn float-right">
+              CLEAR
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <ul class="filter-list" id="filter_lang_div">
+
+      {% for language in language_list %}
+      
+     
+        <li class="filter-item" id="filter_by_lang_{{ language }}">
+          <a href="{{ url("list2") }}?lang={{ language }}"
+             onclick='updateQueryStringParameter("lang", "language" )'>
+            <div class="row align-items-center" style="padding-right: 10px;">
+              <div class="col-9">
+                {{ language }}
+              </div>
+            </div>
+          </a>
+        </li>
+
+       {% endfor %}
+       
+      </ul>
+
+      <hr class="hr-sidebar">
+
+      <div class="row filter-subheading-row">
+        <div class="col">
+          <h6 class="filter-subheading">Number of Pages &mdash;</h6>
+        </div>
+        <div class="col" style="padding-right: 15px;">
+          <a href="javascript:void(0)"
+             onclick='removeURLParameter("npages")'>
+            <button class="btn clear-btn float-right">
+              CLEAR
+            </button>
+          </a>
+        </div>
+      </div>
+
+      <ul class="filter-list" id="filter_npages_div">
+
+        <li class="filter-item" id="filter_by_npages_1">
+          <a href="{{ url('list2') }}?npages=1"
+             onclick='updateQueryStringParameter("npages", "res.language" )'>
+            <div class="row align-items-center" style="padding-right: 10px;">
+              <div class="col-9">
+                Less than 500
+              </div>
+            </div>
+          </a>
+        </li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+{% block foot %}
+<script>
+$(document).ready(function() {
+  // filter by language
+  lang = get('lang');
+  if (lang !== undefined) {
+    filter_lang_id = '#filter_by_lang_' + lang;
+    $('#filter_lang_div li').removeClass('filter-active');
+    $(filter_lang_id).addClass('filter-active');
+  };
+
+// filter by pages
+  npages = get('npages');
+  if (npages !== undefined) {
+    filter_npages_id = '#filter_by_npages_' + npages;
+    $('#filter_npages_div li').removeClass('filter-active');
+    $(filter_npages_id).addClass('filter-active');
+  };
+
+});
+
+
+
+function get(name) {
+   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+};
+
+
+// Credits: https://stackoverflow.com/a/6021027/3187043
+function updateQueryStringParameter(key, value) {
+  var url = window.location.href
+  // remove page number
+  // prefer to use l.search if you have a location/link object
+  var urlparts= url.split('?');
+  var new_url;
+  if (urlparts.length>=2) {
+      var pg_prefix= encodeURIComponent('page')+'=';
+      var pars= urlparts[1].split(/[&;]/g);
+      //reverse iteration as may be destructive
+      for (var i= pars.length; i-- > 0;) {
+          //idiom for string.startsWith
+          if (pars[i].lastIndexOf(pg_prefix, 0) !== -1 ) {
+              pars.splice(i, 1);
+          }
+      }
+      new_url = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : '');
+  }
+  else {
+      new_url = url;
+  }
+  var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+  var separator = new_url.indexOf('?') !== -1 ? "&" : "?";
+  if (new_url.match(re)) {
+    window.location = new_url.replace(re, '$1' + key + "=" + value + '$2');
+  }
+  else {
+    window.location = new_url + separator + key + "=" + value;
+  }
+};
+// Credits: https://stackoverflow.com/a/1634841/3187043
+function removeURLParameter(parameter) {
+    var url = window.location.href
+    var is_param_present = false;
+    // prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+        var prefix= encodeURIComponent(parameter)+'=';
+        var pg_prefix= encodeURIComponent('page')+'=';
+        var pars= urlparts[1].split(/[&;]/g);
+        //reverse iteration as may be destructive
+        for (var i= pars.length; i-- > 0;) {
+            //idiom for string.startsWith
+            if (pars[i].lastIndexOf(prefix, 0) !== -1 ) {
+                is_param_present = true;
+                pars.splice(i, 1);
+            }
+        }
+        if (is_param_present === true) {
+          for (var i= pars.length; i-- > 0;) {
+              //idiom for string.startsWith
+              if (pars[i].lastIndexOf(pg_prefix, 0) !== -1 ) {
+                  pars.splice(i, 1);
+              }
+          }
+        }
+        window.location = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : '');
+        return;
+    }
+    return;
+};
+function clearFilterParameters() {
+    var url = window.location.href
+    var is_any_filter_param_present = false;
+    // prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+        var lang_prefix= encodeURIComponent('lang')+'=';
+        var npages_prefix= encodeURIComponent('npages')+'=';
+        //var pg_prefix= encodeURIComponent('page')+'=';
+        //var pars= urlparts[1].split(/[&;]/g);
+        //reverse iteration as may be destructive
+        for (var i= pars.length; i-- > 0;) {
+            //idiom for string.startsWith
+            if (pars[i].lastIndexOf(lang_prefix, 0) !== -1 ||
+                pars[i].lastIndexOf(npages_prefix, 0) !== -1 ) {
+                is_any_filter_param_present = true;
+                pars.splice(i, 1);
+            }
+        }
+        if (is_any_filter_param_present) {
+          for (var i= pars.length; i-- > 0;) {
+              //idiom for string.startsWith
+              if (pars[i].lastIndexOf(pg_prefix, 0) !== -1) {
+                  pars.splice(i, 1);
+              }
+          }
+        }
+        window.location = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : '');
+        return;
+    }
+    return;
+};
+</script>
+{% endblock %}

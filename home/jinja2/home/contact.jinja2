@@ -1,0 +1,36 @@
+{% extends 'base.jinja2' %}
+
+{% block content %}
+
+<!-- Content Row -->
+<div class="row" style="margin-top: 3.5rem;">
+  <h2>Contact Details</h2>
+</div>
+
+<div class="row" style="margin-bottom: 100px;">
+
+  <!-- Map Column -->
+  <div class="col-md-7">
+    <!-- Embedded Google Map -->
+    <iframe width="100%" height="400px" frameborder="0" scrolling="no" marginheight="0"
+      marginwidth="0" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15224.910183173515!2d78.3443861!3d17.44881985!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0000000000000000%3A0x9d02e89b98deb496!2sInternational+Institute+of+Information+Technology+Hyderabad!5e0!3m2!1sen!2sin!4v1446368457387">
+    </iframe>
+  </div>
+
+  <!-- Contact Details Column -->
+  <div class="col-md-5">
+    <p>
+      Center for Visual Information Technology<br>
+      International Institute of Information Technology<br>
+      Gachibowli, Hyderabad<br>
+      Telangana - 500032<br>
+    </p>
+    <p><abbr title="Phone"><i class="fa fa-phone"></i></abbr> +91-40-6653-1255</p>
+    <p><abbr title="Phone"><i class="fa fa-fax"></i></abbr> +91-40-6653-1413</p>
+    <p><abbr title="Email"><i class="fa fa-at"></i></abbr> cvitocr [at] gmail [dot] com</p>
+    <p><abbr title="Working Hours"><i class="fa fa-clock"></i></abbr> Monday
+      - Friday: 9 AM to 5 PM</p>
+  </div>
+
+</div>
+{% endblock %}

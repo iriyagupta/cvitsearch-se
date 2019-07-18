@@ -1,0 +1,200 @@
+{% extends 'base.jinja2' %}
+
+{% block content %}
+
+<!-- Heading Row -->
+<div class="row" style="margin-top: 15px;" id="heading_row">
+  <div class="col-12">
+    <h2 class="text-center">Sanskrit Demo</h2>
+  </div>
+</div>
+
+<div class="row" id="controls_row">
+  <div class="col-6">
+    <ul class="pagination">
+      {% if doc_image.has_previous() %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1">
+          &laquo;
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ doc_image.previous_page_number() }}">
+          &lsaquo;
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#">&laquo;</a>
+      </li>
+      <li class="page-item disabled">
+        <a class="page-link" href="#">&lsaquo;</a>
+      </li>
+      {% endif %}
+    
+      <li class="page-item active">
+        <span class="page-link">
+          {{ doc_image.number }} of {{ doc_image.paginator.num_pages }}
+          <span class="sr-only">(current)</span>
+        </span>
+      </li>
+      {% if doc_image.has_next() %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ doc_image.next_page_number() }}">
+          &rsaquo;
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ doc_image.paginator.num_pages }}">
+          &raquo;
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#">&rsaquo;</a>
+      </li>
+      <li class="page-item disabled">
+        <a class="page-link" href="#">&raquo;</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+
+  <div class="col-6 text-center">
+    <button type="button" class="btn btn-info" id="run_ocr_btn" style="max-width: 200px; width: 100%">
+      Run OCR
+    </button>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 10px; margin-bottom: 20px;" id="main_row">
+
+  <!-- Left column -->
+  <div class="col-6">
+
+    <!-- Image panel -->
+    <div align="middle" id="img_panel" 
+         style="max-width: 100%; 
+                border: 1px solid black;
+                border-radius: 4px;
+                box-shadow: 0 0 4px #ced4da;
+                padding: 0px;">
+
+      <!-- div with uploaded image -->
+      <div class="popover-container" id="img_div"
+           style="background-color: rgb(82, 86, 89);
+                  padding: 0px;
+                  overflow: auto;
+                  display: none;">
+        <img src="{{ doc_image[0].image.url }}" alt="Uploaded Image" id="uploaded_img"
+            style="width: 90%;
+                    border: 1px solid #ced4da;
+                    margin: 20px;">
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column -->
+  <div class="col-6 text-center my-auto">
+    <div class="spinner-grow text-success" role="status" id="growing_spinner" style="display: none;">
+      <span class="sr-only">Loading...</span>
+    </div>
+    
+    <!-- Text panel -->
+    <div align="middle" id="text_panel"
+         style="max-width: 100%; 
+                border: 1px solid black;
+                border-radius: 4px;
+                box-shadow: 0 0 4px #ced4da;
+                display: none;">
+
+      <!-- div with OCR output -->
+      <div id="text_div"
+           class="text-left"
+           style="background-color: rgb(255, 255, 255);
+                  padding: 10px;
+                  overflow: auto;
+                  font-size: 14pt;
+                  border-radius: 4px;
+                  will-change: transform;">
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block foot %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+  integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+  main_row = document.getElementById('main_row');
+  spinner = document.getElementById('growing_spinner');
+  heading_row = document.getElementById('heading_row')
+  controls_row = document.getElementById('controls_row')
+
+  window_height = $(window).height();
+  heading_row_height = heading_row.clientHeight;
+  controls_row_height = controls_row.clientHeight;
+  heading_row_margin = parseInt(heading_row.style.marginTop);
+  navbar_height = document.getElementById('top_navbar').clientHeight;
+  footer_height = document.getElementsByClassName('footer')[0].clientHeight;
+  row_margin_top = parseInt(main_row.style.marginTop);
+  row_margin_bottom = parseInt(main_row.style.marginBottom);
+  panel_height = window_height
+    - navbar_height 
+    - heading_row_height
+    - heading_row_margin
+    - controls_row_height
+    - row_margin_top 
+    - row_margin_bottom 
+    - footer_height;
+  console.log(panel_height);
+
+  img_panel = document.getElementById('img_panel');
+  img_div = document.getElementById('img_div');
+  img_panel.style.height = panel_height + "px";
+  img_div.style.height = panel_height - 2 + "px";
+  img_div.style.display = "block";
+
+  text_panel = document.getElementById('text_panel');
+  text_div = document.getElementById('text_div');
+
+  function display_output() {
+    text_panel.style.display = "block";
+    text_panel.style.height = panel_height + "px";
+    text_div.style.height = panel_height - 2 + "px";
+  };
+
+  function hide_spinner() {
+    spinner.style.display = "none";
+  };
+
+  function display_spinner() {
+    text_panel.style.display = "none";
+    $('#run_ocr_btn').addClass('disabled');
+    spinner.style.display = "inline-block";
+  };
+
+  function print_response(json_response) {
+    hide_spinner();
+    $('#run_ocr_btn').removeClass('disabled');
+    display_output();
+    $("#text_div").html(json_response.output);
+  };
+
+  $('#run_ocr_btn').click(function() {
+    $.ajax({
+      url: '{{ url('run_ocr', args=[doc_image[0].id]) }}',
+      type: 'GET',
+      dataType: "json",
+      beforeSend: display_spinner,
+      success: print_response,
+    });
+  });
+</script>
+
+{% endblock %}
+
