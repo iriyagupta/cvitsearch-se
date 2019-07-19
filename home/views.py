@@ -226,25 +226,34 @@ def search(request):
             context['results'] = Book.objects.filter(id__in=ids)
             total = context["results"].count()
         else:      # print(q)
-            if '"' in q:
+            if q.startswith('"') and q.endswith('"'):
+                q = q.replace('"','')
                 print(q)
-                # q.count('"') % 2 != 0:
-                # print(q)
                 a=PageIndex.search().query('match_phrase',content=q)
                 page_ids=[i.id for i in a]
                 print(page_ids)
-                print("\n\n")
                 context['results'] = Book.objects.filter(pages__id__in=page_ids).distinct()
-                total = context["results"].count()
-                print(total)
-                context['page_list'] = Page.objects.filter(id__in=page_ids)
-                print(context["page_list"])
-                for i in context["page_list"]:
-                    print(i)
+                pages=[]
                 page_lines = {i:[] for i in page_ids}
                 print(page_lines)
                 page_lines2 = {i:[] for i in page_ids}
                 print(page_lines2)
+                for i in page_ids:
+                    pages.append(i)
+                    line_list = Page.objects.get(id=i).content.split('.')
+                    for line in line_list:
+                        l=line.lower()
+                        cap = False
+                        if q.lower() in l:
+                            l=l.replace(q,q.upper())
+                            print(l)
+                            cap=True
+                        if cap:
+                            page_lines[i].append(l)
+                total = context["results"].count()
+                print(total)
+                context['page_list'] = Page.objects.filter(id__in=page_ids)
+                print(context["page_list"])
                 context['page_lines'] = page_lines
             else:
                 print("yay")
