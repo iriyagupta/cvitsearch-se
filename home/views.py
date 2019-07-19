@@ -251,6 +251,7 @@ def search(request):
                 context['page_list'] = Page.objects.filter(id__in=page_ids)
                 print(context["page_list"])
                 context['page_lines'] = page_lines
+                q = request.GET.get('q',None)
             else:
                 print("yay")
                 words = q.split(" ")
