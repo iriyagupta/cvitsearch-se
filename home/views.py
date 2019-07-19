@@ -228,16 +228,12 @@ def search(request):
         else:      # print(q)
             if q.startswith('"') and q.endswith('"'):
                 q = q.replace('"','')
-                print(q)
                 a=PageIndex.search().query('match_phrase',content=q)
                 page_ids=[i.id for i in a]
-                print(page_ids)
                 context['results'] = Book.objects.filter(pages__id__in=page_ids).distinct()
                 pages=[]
                 page_lines = {i:[] for i in page_ids}
-                print(page_lines)
                 page_lines2 = {i:[] for i in page_ids}
-                print(page_lines2)
                 for i in page_ids:
                     pages.append(i)
                     line_list = Page.objects.get(id=i).content.split('.')
