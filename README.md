@@ -3,7 +3,7 @@
 
 An easy interface for  user to search for the academic data, which is OCR processed(OCRWeb by CVIT, IIITH).
 
-Currently has the collaboration from NDLI(IITKGP) adn British Library.
+Currently has the collaboration from NDLI(IITKGP) and British Library.
 
 
 ### Requirements
