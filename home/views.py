@@ -209,11 +209,6 @@ def search(request):
             ids = [i.id for i in a]
             context['results'] = Book.objects.filter(id__in=ids)
             total = context["results"].count()
-        elif para == 'title':
-            a = BookIndex.search().query('match_phrase',title=q)
-            ids = [i.id for i in a]
-            context['results'] = Book.objects.filter(id__in=ids)
-            total = context["results"].count()
         elif para == 'all':
             a = BookIndex.search().query('match_phrase',title=q)
             b = BookIndex.search().query('match_phrase',isbn=q)
@@ -232,13 +227,11 @@ def search(request):
             print(book_list_common)
 
             final = list(set().union(id1, id2, id3,book_list_common)) 
-            # context['results'] = 0
             context['results'] = Book.objects.filter(id__in=final)
             total = context["results"].count()
 
             page_index=PageIndex.search().query('match_phrase',content=q)
             page_ids=[i.id for i in page_index]
-            # print(page_ids)
             pages=[]
             page_lines = {i:[] for i in page_ids}
             page_lines2 = {i:[] for i in page_ids}
@@ -264,7 +257,7 @@ def search(request):
             context['page_list'] = Page.objects.filter(id__in=page_ids)
             # print(context["page_list"])
             context['page_lines'] = page_lines
-        else:      # print(q)
+        elif para=="content":
             if q.startswith('"') and q.endswith('"'):
                 q = q.replace('"','')
                 # print(q)
@@ -285,37 +278,20 @@ def search(request):
                     for line in line_list:
                         l=line.lower()
                         cap = False
-                        
-                        
                         if q.lower() in l:
                             l=l.replace(q,'<b class="text-success">{}</b>'.format(q.upper()))
-                            # print(re.sub(r'q', r'<b>q</b>', q))
-                            # l=l.replace(q,'\\033[1m'+q+'\\033[1m')
                             print(l)
                             count+=1
                             cap=True
                         if cap:
                             page_lines[i].append(l)
-                    print(count)
-                    # if count>0:
-                    #     counter_exact.append(count)
-                    #     b = Page.objects.get(pk=i)
-                    #     book_id = b.book_id
-                    #     book_ids.append(book_id)
-                    # if Book.objects.filter(pages__id__in=i) in book_ids:
-                    #     print(book_ids)
-                    # # print(book_ids)
-                    # print(counter_exact)   
-                # print(book_ids)     
+                    print(count)   
                 context['results'] = Book.objects.filter(pages__id__in=page_ids).distinct()
                 total = context["results"].count()
-                # print(total)
                 context['page_list'] = Page.objects.filter(id__in=page_ids)
-                # print(context["page_list"])
                 context['page_lines'] = page_lines
                 q = request.GET.get('q',None)
             else:
-                # print("yay")
                 words = q.split(" ")
                 if lan == "sel":
                     operators = list(set())
@@ -489,8 +465,12 @@ def search(request):
                 context["dictionary"]=diction
                 context["content"]=content
                 context["dictioni"]=dictioni
-                # print(dictioni)
                 total = context["results"].count()
+        else:
+            a = BookIndex.search().query('match_phrase',title=q)
+            ids = [i.id for i in a]
+            context['results'] = Book.objects.filter(id__in=ids)
+            total = context["results"].count()
     else:
         q=""
         context["results"]=None
