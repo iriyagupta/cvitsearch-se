@@ -22,7 +22,3 @@ class PageIndex(DocType):
 	class Meta:
 		model=Page
 		fields=['id','content']
-
-	def get_instances_from_related(self, related_instance):
-		if isinstance(related_instance, Page):
-			return related_instance.pages

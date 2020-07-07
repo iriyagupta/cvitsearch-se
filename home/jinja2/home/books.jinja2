@@ -1,0 +1,27 @@
+{% extends 'base.jinja2' %}
+
+{% block content %}
+
+<div class="row" style="width: 100%;">
+	<div class="col-3" style="position: fixed; padding: 5em; ">
+		<div style="font-size: 1.5em;border:3px solid black;padding: 0.5em; background-color: #4CAF50;color:white"><span>Bibliographic Information</span></div>
+		<br>
+		<div style="margin-left: 2em;">
+			<p> <span style="margin-right: 1.2em;"><strong>Title : </strong></span>{{ title }}</p>
+			<p> <span style="margin-right: 1.2em;"><strong>Author : </strong></span>{{ author }}</p>
+			<p> <span style="margin-right: 1.2em;"><strong>Length : </strong></span>{{ pages }} pages</p>
+			<p> <span style="margin-right: 1.2em;"><strong>ISBN : </strong> </span>{{ isbn }}</p>
+			<p> <span style="margin-right: 1.2em;"><strong>Subject : </strong></span>{{ genre }}</p>
+		</div>
+	</div>
+	<div class="col-5" style="text-align:center;margin:0px auto;overflow-y: scroll; height: 900px; width: 45%;">
+		{% for i in imglist %}
+			<img src='{{ i }}' style="height: 100%; width:100%; margin-top: 10px;" class="justify-content-center">
+		{% endfor %}
+	</div>
+
+</div>
+
+
+
+{% endblock %}

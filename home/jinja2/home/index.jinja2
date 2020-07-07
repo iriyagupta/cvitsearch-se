@@ -1,6 +1,5 @@
 {% extends 'base.jinja2' %}
 
-
 <!-- Google transcript -->
 
 {% block head %}
@@ -13,43 +12,48 @@
 
 {% block content %}
 
-<!-- Search Bar with choices -->
 
 <main role="main" class="container-fluid main-container">
+
+
 <div class="row" style="margin-top: 20px;">
   <div class="col-12">
-    <p  class="text-center font-weight-light" style="margin-bottom:0.3rem;font-size:0.9rem;">
-      {{ total }} items hosted on CVITSearch
+    <p  class="text-center font-weight-light" style="margin-bottom:0.3rem;font-size:1rem;">
+      {{ total }} pages hosted on OCR Search Engine
     </p>
   </div>
 </div>
+
+
+<!-- Search Bar with choices -->
+
   <div class="row">
-  <div class="col-3">
+  <div class="col-2">
   </div>
-    <div class="col-6 text-center">
+    <div class="col-9 text-center">
       <form action="{{ url('search') }}" method="GET">
         <div class="row">
-          <div class="input-group input-group col-md-6 first">
+          <div class="input-group input-group col-5 first">
             <!-- Book input -->
-            <input type="text" name="q" value="" class="form-control" placeholder="Enter the book title, isbn, author or search key" maxlength="255" id="id_title" autofocus="">
+            <input type="text" name="q" value="" class="form-control" placeholder="&#128269; Enter your search keyword" maxlength="255" id="id_title" autofocus="">
           </div>
           <div class="input-group col-2 second" >
             <select id="language" name="language" class="form-control" onchange="javascript:languageChangeHandler()" style="max-width: 100%; display: inline-block;">
+              <option value="sel" selected>Choose Language<i class="fas fa-language"></i></option>
               <option value="hi">Hindi</option>
-              <option value="en">English</option>
-              <option value="bn">Bengali</option>
-              <option value="sa">Sanskrit</option>
               <option value="te">Telugu</option>
+              <option value="ta">Tamil</option>
             </select>
           </div>
 
 
           <div class="input-group col-2 third">
-            <select name="parameter" id="type" class="form-control">
+            <select name="parameter" id="type" class="form-control mr-sm-2">
+              <option value="title" id="title" selected>Title</option>
               <option value="content" id="content">Content</option>
-              <option value="title" id="title">Title</option>
-              <option value="isbn" id="isbn">ISBN</option>
               <option value="author" id="author">Author</option>
+              <option value="isbn" id="isbn">ISBN</option>
+	      <option value="all" id="author">Search All</option>
             </select>
             <input type="hidden" > 
           </div>
@@ -63,15 +67,11 @@
         </div>
       </form>
     </div> 
-    <div class="col-3">
+    <div class="col-2">
   </div>
 
   </div>
-
-
 <hr>
-
-
 
 <div class="row" style="margin-top:6rem;">
 
@@ -79,19 +79,23 @@
 
       <div class="col-3 " style="padding-left:150px;">
 
+
+      </div>
+
+    <div class="col-6" >
+     
+    </div>
+
+
+
+    <div class="col-3 " style="padding-right:150px;">
+
           <div id="filter_div">
               <div class="row filter-heading-row">
                   <div class="col">
-                    <h5 class="filter-heading">Search Options</h5>
+                    <h5 class="filter-heading">More Search Options</h5>
                   </div>
-                  <div class="col my-auto" style="padding-right: 15px;">
-                    <a href="javascript:void(0)"
-                       onclick='clearFilterParameters()'>
-                      <button class="btn clear-btn float-right">
-                       CLEAR ALL
-                      </button>
-                    </a>
-                  </div>
+
               </div>
 
               <hr class="hr-sidebar">
@@ -100,14 +104,7 @@
                 <div class="col">
                   <h6 class="filter-subheading">Educational Category &mdash;</h6>
                 </div>
-                <div class="col" style="padding-right: 15px;">
-                  <a href="javascript:void(0)"
-                     onclick='removeURLParameter("index_genre")'>
-                    <button class="btn-sm clear-btn float-right">
-                      CLEAR
-                    </button>
-                  </a>
-                </div>
+
               </div>
 
               <ul class="filter-list" id="filter_genre_div">
@@ -137,14 +134,7 @@
                 <div class="col">
                   <h6 class="filter-subheading">Featured Sources  &mdash;</h6>
                 </div>
-                <div class="col" style="padding-right: 15px;">
-                  <a href="javascript:void(0)"
-                     onclick='removeURLParameter("index_source")'>
-                    <button class="btn-sm clear-btn float-right">
-                      CLEAR
-                    </button>
-                  </a>
-                </div>
+
               </div>
 
               <ul class="filter-list" id="filter_source_div">
@@ -173,31 +163,16 @@
 
       </div>
 
-    <div class="col-6" >
-     
-    </div>
 
 
 
-    <div class="col-3">
-      <div class="card border-light mb-3" style="max-width:18rem; max-height:550px;overflow-y:auto;">
-          <div class="card-header bg-success text-white">Important Announcements and Updates</div>
-            <div class="card-body pt-3 small text-dark">
-                <marquee behavior="scroll" direction="up" scrollamount="5">
-                  {% for announcement in ann %}
 
-                  <h6 class="card-title"><strong> {{ announcement.ann_title }}</strong></h6>
-                  
-                  <p class="card-text">{{ announcement.description }}</p>
-                  <p class="card-text">{{ announcement.timestamp }}</p>
-                
-                  {% endfor %}
-                </marquee>
-            </div>
-      </div>
+
+
     </div>
 
 </div>
+
 
 </div>
 

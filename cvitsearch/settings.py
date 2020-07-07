@@ -15,7 +15,7 @@ from cvitsearch import credentials
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# BASE_URL = "beta/"
+#BASE_URL = "beta/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 print(STATICFILES_DIRS)
 
@@ -51,9 +51,13 @@ INSTALLED_APPS += [
 
 ELASTICSEARCH_DSL= {
     'default': {
-        'hosts' : 'localhost:9200'
-    }
+        'hosts' : 'localhost:9200',
+        'chunk_size': 2000,
+        }
+
 }
+
+ELASTICSEARCH_DSL_AUTOSYNC= False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -111,8 +115,8 @@ WSGI_APPLICATION = 'cvitsearch.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cvitsearch',
-        'USER': 'supernova',
+        'NAME': 'searchengine_full',
+        'USER': 'se_user',
         'PASSWORD': credentials.DATABASE_PASSWORD,
         'HOST': 'localhost',
         'PORT': '',

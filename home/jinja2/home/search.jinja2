@@ -12,7 +12,107 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
 
+
+<script>
   
+  $(document).ready(function () {
+    $('.queryModal').click(function () {
+            var link_id = $(this).attr('id');
+            var record_id = link_id.replace("results_","");
+            var q = "{{ q }}";
+            var lan = "{{ language }}";
+            console.log(q);
+            var container = $('div ' + '#card_' + record_id)[0];
+            var image = '<img id="image_url" class="card-img-top" src="{{ value }}" alt="Card Image" style="height:100%; padding:0.5em;">'
+            $.ajax({
+              type: "POST",
+              url: '{{ url('line_segment') }}',
+              data: {'record_id': record_id, "q":q,"csrfmiddlewaretoken": "{{ csrf_token }}","language":lan},
+              error: {"message": "error"},
+              success: function(response, status,jqXHR) {
+                        console.log(response);
+                        var diction = response["diction"];
+			container.innerHTML = " ";
+                        for (var k in diction) {
+                          var img_url = diction[k];
+                          var image =  document.createElement("img");
+                          image.src=img_url;
+                          container.append(image);
+                        }                  
+                      },
+              dataType: "json",
+            });
+
+        });
+
+    });
+
+
+
+
+</script> 
+
+
+<script>
+  
+  $(document).ready(function () {
+    $('.bookModal').click(function () {
+
+
+            var w = window.open('{{ url('books') }}', '_blank');
+            var link_id = $(this).attr('id');
+            var record_id = link_id.replace("results_","");
+            var q = "{{ q }}";
+            var lan = "{{ language }}";
+            console.log(q);
+            var container = $("#card1").load("{{ url('books') }}");
+            console.log(container)
+            var image = '<img id="image_url_1" class="card-img-top" src="{{ value }}" alt="Card Image" style="height:100%; padding:0.5em;">'
+            $('#loading-image').show();
+            $.ajax({
+              type: "GET",
+              url: '{{ url('books') }}',
+              datatype:'html',
+              data: {'record_id': record_id, "q":q,"csrfmiddlewaretoken": "{{ csrf_token }}","language":lan},
+              error: {"message": "error"},
+              success: function(response, status,jqXHR) {
+                        var diction = response["diction"];
+                        for (var k in diction) {
+                            var img_url = diction[k];
+                            var i;
+                            for (i = 0; i < img_url.length; ++i) {
+
+                              // console.log(img_url.length);
+                              var image =  document.createElement("img");
+                              // image.src=img_url[k];
+                              image.src=img_url[i];
+
+                              // $('#image_url').html(append($(image).filter('#image_url').html()));
+                              console.log(image.src);
+
+                              $(w.document.body).html(container.append(image));
+                                                            
+                            }
+
+                          
+                        }                  
+                      },
+              complete: function(){
+                    $('#loading-image').hide();
+                  },
+              dataType: "json",
+            });
+
+        });
+
+    });
+
+
+
+
+</script>
+
+ 
 {% endblock %}
 
 
@@ -23,58 +123,64 @@
 
   <div class="container mt-3">
     <div class="row">
-      <div class="col text-center">
-        <!-- Search Bar -->
-        <form action="{{ url('search') }}" method="GET">
-          <div class="row">
-            <div class="input-group input-group-sm col-6 first">
-              <!-- Book input -->
-                <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Search for book title or keyword" 
-                maxlength="255" id="id_title" autofocus="" autocomplete="on">
-            </div>
-
-            <!-- Language Selection -->
-            <div class="input-group col-2 second">
-              <select id="language" name="language" class="form-control" onchange="javascript:languageChangeHandler()" 
-              style="max-width: 80%; display: inline-block;">
-                <option value="en">English</option>
-                <option value="hi">Hindi</option>
-                <option value="bn">Bengali</option>
-                <option value="sa">Sanskrit</option>
-                <option value="te">Telugu</option>
-              </select>
-            </div>
-
-            <!-- Type of Search  -->
-            <div class="input-group col-2 third">
-              <select name="parameter" id="type" class="form-control">
-                <option value="content" id="content">Content</option>
-                <option value="title" id="title">Title</option>
-                <option value="isbn" id="isbn">ISBN</option>
-                <option value="author" id="author">Author</option>
-              </select>
-              <input type="hidden" > 
-            </div>
-
-           <!-- Submit Button -->
-            <div class="input-group-append col-2 third">
-                <button class="btn btn-outline-info" type="submit">Search</button>
-            </div>
+  
+    <div class="col-12 text-center">
+      <form action="{{ url('search') }}" method="GET">
+        <div class="row">
+          <div class="input-group input-group col-5 first">
+            <!-- Book input -->
+            <input type="text" name="q" value="" class="form-control" placeholder="&#128269; Enter your search keyword" maxlength="255" id="id_title" autofocus="">
           </div>
-        </form>
-      </div>      
+          <div class="input-group col-2 second" >
+            <select id="language" name="language" class="form-control" onchange="javascript:languageChangeHandler()" style="max-width: 100%; display: inline-block;">
+              <option value="sel" selected>Choose Language<i class="fas fa-language"></i></option>
+              <option value="hi">Hindi</option>
+              <option value="te">Telugu</option>
+              <option value="ta">Tamil</option>
+            </select>
+          </div>
+
+
+          <div class="input-group col-3 third">
+            <select name="parameter" id="type" class="form-control mr-sm-2">
+              <option value="title" id="title" selected>Title</option>
+              <option value="content" id="content">Content</option>
+              <option value="author" id="author">Author</option>
+              <option value="isbn" id="isbn">ISBN</option>
+              <option value="all" id="author">Search All</option>
+            </select>
+            <input type="hidden" >
+          </div>
+
+
+          <div class="input-group-append col-2 fourth text-left">
+            <!-- Submit button -->
+            <button class="btn btn-outline-info" type="submit">Search</button>
+            <!-- <input type="submit" value="Submit" class="btn btn-success"> -->
+          </div>
+        </div>
+      </form>
     </div>
+    
   </div>
+ </div>
   <!-- Check if the results are generated for a particular query for finding the aggregate data -->
   {% if results %}
-    <p class="text-center text-lowercase font-weight-light" style="font-size:0.8rem;"> {{ total }} are the results searched in {{ time_diff }} </p>
+    <p class="text-center font-weight-light" style="font-size:0.8rem; margin-top:0.5rem;margin-bottom:0rem;"> About {{ total }} results ( {{ time_diff }} seconds )</p>
   {% else %}
-    <p class="text-center text-lowercase font-weight-light" style="font-size:0.8rem;"> 0 results found in {{ time_diff }} secs. </p>
+    <p class="text-center text-lowercase font-weight-light" style="font-size:0.8rem; margin-top:0.5rem;margin-bottom:0rem;"> 0 results found ( {{ time_diff }} seconds ) </p>
   {% endif %}
 
   <hr>
 
-  <!-- Searched Results -->
+ {% if q %}
+  <p class="text-center font-weight-light" style="font-size:0.8rem;"> You searched for <b><span style="font-size:1rem; color:blue;">{{ q }}</span></b> </p>
+  {% elif request.GET.get('q')=="" %}
+  <p class="text-center font-weight-light" style="font-size:0.8rem;"><b><span style="font-size:1rem;"><a href="#id_title"">Pease enter a keyword to search in the searchbar.</a></span></b> </p>
+  {% endif %}
+
+
+ <!-- Searched Results -->
   <div class="row">
     <div class="col-md-9">
       <div class="container mt-3">
@@ -91,118 +197,138 @@
                     <div class="row details">
 
                       <!-- Thumbnail -->
+
+                      {% if res.thumbnail %}
+
                       <div class="col-2">
                           <img class="image-res" id="img" src="{{ res.thumbnail.url }}"  alt="BookFrontImage" title="{{ res.title }}" style="height:90%; width:100%"/>
                       </div>
 
+                      {% else %}
 
-                      <!-- Check for content parameter for the change in UI -->
-                      {% if request.GET.get('parameter')=="content" %}
-                        <div class="col-10">
-                          <!-- the title of the book -->
-                          <p class="title"> {{ res.title }} - <i class="author"> {{ res.author }} </i></p>
-                            <!-- Description of Books -->
-                            <div class="row">
-                              <div class="col-7">
-                                <ul style="list-style-type: none;" class="description text-left">
-                                  <li><strong>ISBN-13</strong> : {{ res.isbn }}</li>
-                                  <li><strong>Language</strong> : {{ res.language }}</li>
-                                  <li><strong>Genre</strong> : {{ res.genre }}</li>
-                                  <li><strong>Source</strong> : {{ res.source }}</li>
-                                  <li class="aboutdes post_body">
-                                    {% if res.description %}
-                                      <p class="abstract"><strong>Abstract</strong> : {{ res.description|safe|truncate(40) }}
-                                    {% else %}
-                                      <p class="abstract"><strong>Abstract</strong> : {{ "Unavailable Content. Read complete book for more information."|truncate(25) }}
-                                    {% endif %}
-                                      <a href="#{{ res }}" data-toggle="modal" data-target="#description{{ res.id }}">read more</a>
-                                      </p>
+                      <div class="col-2">
+                          <img class="image-res" id="img" src="media/Images/No-image-available.jpg"  alt="BookFrontImage" title="{{ res.title }}" style="height:90%; width:100%"/>
 
-                                      <!-- Modal for every book -->
-                                      <div class="modal fade" id="description{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                          <div class="modal-content">
-                                            <div class="modal-header w3-green">
-                                              <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
-                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                              </button>
-                                            </div>
-                                            <div class="modal-body">
-                                              {% if res.book_pdf %}
-                                                <p class="download" style="font-size:0.8rem;">
-                                                  {% if res.description %}
-                                                    {{ res.description }}
-                                                  {% else %}
-                                                    {{ "Unavailable Content. Read complete book for more information." }}
-                                                  {% endif %}
+                      </div>
 
-                                                  <br> 
+                      {% endif %}
 
-                                                  <p class="download" style="font-size:1rem;">
-                                                    <strong >Read Complete Book here : </strong> <a href="{{ res.book_pdf.url }}" class="button small tooltip-test" title="Open Pdf"><i class="fa fa-download" aria-hidden="true"></i></a> 
-                                                  </p>
+{% if request.GET.get('parameter')=="content" %}
+
+
+                                            <div class="col-10">
+                        <!-- the title of the book -->
+                        <p class="title"> {{ res.title }} - <i class="author"> {{ res.author }} </i></p>
+                          <!-- Description of Books -->
+                          <div class="row">
+                            <div class="col-7">
+                              <ul style="list-style-type: none;" class="description text-left">
+                                <li><strong>ISBN-13</strong> : {{ res.isbn }}</li>
+                                <li><strong>Language</strong> : {{ res.language }}</li>
+                                <li><strong>Genre</strong> : {{ res.genre }}</li>
+                                <li><strong>Source</strong> : {{ res.source }}</li>
+                                <form action="{{ url('books') }}" method="post" target="_blank">
+                                  <li><strong>Read</strong> : 
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+                                    <input type="hidden" name="fname" value="{{ res.id }}"> 
+                                    <input type="submit" style="background-color: transparent; text-decoration: underline; border: none;color: blue; cursor: pointer;" value="View">
+                                  </li>
+			                          </form>
+                                
+ 
+                                <li class="aboutdes post_body">
+                                  {% if res.description %}
+                                    <p class="abstract"><strong>Abstract</strong> : {{ res.description|safe|truncate(40) }}
+                                  {% else %}
+                                    <p class="abstract"><strong>Abstract</strong> : {{ "Unavailable Content. Read complete book for more information."|truncate(25) }}
+                                  {% endif %}
+                                    <a href="#{{ res }}" data-toggle="modal" data-target="#description{{ res.id }}">read more</a>
+                                    </p>
+
+                                    <!-- Modal for every book -->
+                                    <div class="modal fade" id="description{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header w3-green">
+                                            <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+						                                <p class="download" style="font-size:0.8rem;">
+                                                {% if res.description %}
+                                                  {{ res.description }}
+                                                {% else %}
+                                                  {{ "Unavailable Content. Read complete book for more information." }}
+                                                {% endif %}
+                                                <br> 
+                                                <p class="download" style="font-size:1rem;">
+                                                  <form action="{{ url('books') }}" method="post" target="_blank">
+                                                    <strong >Read Complete Book here : </strong>
+                                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+                                                    <input type="hidden" name="fname" value="{{ res.id }}"> 
+                                                    <input type="submit" style="background-color: transparent; text-decoration: underline; border: none;color: blue; cursor: pointer;" value="View">
+                                                  </form>
                                                 </p>
-                                              {% else %}
-                                              <p>
-                                              <strong>We are sorry !!! No pdf Available. Come back later. </strong>
                                               </p>
-                                              {% endif %}  
-                                            </div>
                                           </div>
                                         </div>
                                       </div>
-                                  </li>
-                                </ul>
-                              </div>
-                              <!-- See Results About -->
-                              <div class="col-5 aboutdes post_body">
-                                <p style="font-size:0.8rem;">
-                                  <strong>See results about</strong>
-
-                                  <br>
-
-                                    <a href="#{{ res }}" data-toggle="modal" data-target="#query{{ res.id }}">{{ q }} </a>
-
-                                  <br>
-
-                                  <span> {{ page_lines[page_list.filter(book__id=res.id)[0].id].0|safe|truncate(100) }} </span>
-                                </p>
-                              </div>
-                              <!-- Modal for the See Results About section -->
-                              <div class="modal fade" id="query{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 40% !important;">
-                                  <div class="modal-content">
-                                    <div class="modal-header w3-green">
-                                      <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                      </button>
                                     </div>
-                                    <div class="modal-body">    
-                                      <!-- Card for every query obtained -->
-                                      <div class="card-group">
-                                        
-                                          {% for page in page_list %}
-                                            {% if page.book.id==res.id %}
-                                              <div class="col-12">
-                                                <div class="card">
-                                                  <img class="card-img-top" src="{{ page.image.url }}" alt="Card Image" style="height:100%;">
-                                                  <div class="card-body">
-                                                    <h6 class="card-title">Retrieved Results</h6>
-                                                    <small class="card-text"> {% for i in page_lines[page.id] %} {{ i }} <br><br>{% endfor %}</small>
-                                                  </div>
-                                                </div>
+                                </li>
+
+                              </ul>
+                            </div>
+                            <!-- See Results About -->
+                            <div class="col-5 aboutdes post_body">
+                              <p style="font-size:0.8rem;">
+                                <strong>See results about</strong>
+
+                                <br>
+
+                                  <a href="#{{ res }}" class="queryModal"  id="results_{{ res.id }}" data-toggle="modal" data-target="#query{{ res.id }}" name="q">{{ q }} </a>
+
+                                <br>
+
+                                <span> {{ page_lines[page_list.filter(book__id=res.id)[0].id].0|safe|truncate(100) }} </span>
+                              </p>
+                            </div>
+                            <!-- Modal for the See Results About section -->
+                            <div class="modal fade" id="query{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 40% !important;">
+                                <div class="modal-content">
+                                  <div class="modal-header w3-green">
+                                    <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">    
+                                    <!-- Card for every query obtained -->
+                                    <div class="card-group">
+                                      
+					
+       		
+                                              <div class="col-12 lazy" id="card_{{ res.id }}" style="height:50%;width:50%; margin-bottom: 1em;">
+
+                                                  <div class="col-2 " id="loading-image" style="margin:0px auto;"><img src="media/images/tenor.gif"></img></div>
+                                               
+
                                               </div>
-                                            {% endif %}
-                                          {% endfor %}
-                                        
-                                      </div>
+                                      
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                      {% else %}
+                            </div>
+                      
+                
+
+                      {% elif request.GET.get('parameter')=="all" %}
+                    
+                        {% if q|title in res.title or q|title in res.author or q|title in res.isbn %}
+
 
                         <div class="col-10">
                           <!-- the title of the book -->
@@ -212,63 +338,263 @@
 
                               <div class="col-5">
                                 <ul style="list-style-type: none;" class="description text-left">
-                                  <li><strong>ISBN-13</strong> : {{ res.isbn }}</li>
+                                  {% if res.isbn %}
+                                    <li><strong>ISBN-13</strong> : {{ res.isbn }}</li>
+                                  {% else %}
+                                    <li><strong>ISBN-13</strong> : "-" </li>
+                                  {% endif %}
+
                                   <li><strong>Language</strong> : {{ res.language }}</li>
                                   <li><strong>Genre</strong> : {{ res.genre }}</li>
                                   <li><strong>Source</strong> : {{ res.source }}</li>
-                                  <li><strong>Download</strong> : <a href="{{ res.book_pdf.url }}" class="button small tooltip-test" title="Open Pdf"><i class="fa fa-download" aria-hidden="true"></i></a> </li>
-                                </ul>
-                              </div>
+                                <form action="{{ url('books') }}" method="post" target="_blank">
+                                  <li><strong>Read</strong> : 
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+                                    <input type="hidden" name="fname" value="{{ res.id }}"> 
+                                    <input type="submit" style="background-color: transparent; text-decoration: underline; border: none;color: blue; cursor: pointer;" value="View">
+                                  </li>
+                                </form>
+                                
+ 
+                                <li class="aboutdes post_body">
+                                  {% if res.description %}
+                                    <p class="abstract"><strong>Abstract</strong> : {{ res.description|safe|truncate(40) }}
+                                  {% else %}
+                                    <p class="abstract"><strong>Abstract</strong> : {{ "Unavailable Content. Read complete book for more information."|truncate(25) }}
+                                  {% endif %}
+                                    <a href="#{{ res }}" data-toggle="modal" data-target="#description{{ res.id }}">read more</a>
+                                    </p>
 
-                              <div class="col-5">
-                                <ul style="list-style-type: none;" class="description text-left">
-                                  <li class="aboutdes post_body">
-                                    {% if res.description %}
-                                      <p class="abstract"><strong>Abstract</strong> : {{ res.description|safe|truncate(100) }}
-                                      {% else %}
-                                      <p class="abstract"><strong>Abstract</strong> : {{ "Unavailable description of the book. Read complete book for more information."|truncate(50) }}
-                                    {% endif %}
-                                      <a href="#{{ res }}" data-toggle="modal" data-target="#description{{ res.id }}">read more</a>
-                                      </p>
-                                      <!-- Modal for Book abstract -->
-                                      <div class="modal fade" id="description{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                          <div class="modal-content">
-                                            <div class="modal-header w3-green">
-                                              <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
-                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                              </button>
-                                            </div>
-                                            <div class="modal-body">
-                                              {% if res.book_pdf %}
-                                                <p class="download" style="font-size:0.8rem;">
+                                    <!-- Modal for every book -->
+                                    <div class="modal fade" id="description{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header w3-green">
+                                            <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <p class="download" style="font-size:0.8rem;">
                                                 {% if res.description %}
                                                   {{ res.description }}
                                                 {% else %}
-                                                  {{ "Unavailable description of the book. Read complete book for more information." }}
+                                                  {{ "Unavailable Content. Read complete book for more information." }}
                                                 {% endif %}
-
                                                 <br> 
-
-                                                  <p class="download" style="font-size:1rem;">
-                                                    <strong >Read Complete Book here : </strong> <a href="{{ res.book_pdf.url }}" class="button small tooltip-test" title="Open Pdf"><i class="fa fa-download" aria-hidden="true"></i></a> 
-                                                  </p>
+                                                <p class="download" style="font-size:1rem;">
+                                                  <form action="{{ url('books') }}" method="post" target="_blank">
+                                                    <strong >Read Complete Book here : </strong>
+                                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+                                                    <input type="hidden" name="fname" value="{{ res.id }}"> 
+                                                    <input type="submit" style="background-color: transparent; text-decoration: underline; border: none;color: blue; cursor: pointer;" value="View">
+                                                  </form>
                                                 </p>
-                                              {% else %}
-                                              <p><strong>No pdf available for now. We are working on getting you the complete resources.</strong></p>
-                                              {% endif %}  
-                                            </div>
+                                              </p>
                                           </div>
                                         </div>
                                       </div>
+                                    </div>
+                                </li>
+
+                              </ul>
+                            </div>
+                                  
+                              {% else %}
+
+                              <div class="col-10">
+                              <!-- the title of the book -->
+                              <p class="title"> {{ res.title }} - <i class="author"> {{ res.author }} </i></p>
+                                <!-- Description of Books -->
+                                <div class="row">
+                                  <div class="col-7">
+                                    <ul style="list-style-type: none;" class="description text-left">
+                                      {% if res.isbn %}
+                                        <li><strong>ISBN-13</strong> : {{ res.isbn }}</li>
+                                      {% else %}
+                                        <li><strong>ISBN-13</strong> : "-" </li>
+                                      {% endif %}
+
+                                      <li><strong>Language</strong> : {{ res.language }}</li>
+                                      <li><strong>Genre</strong> : {{ res.genre }}</li>
+                                      <li><strong>Source</strong> : {{ res.source }}</li>
+                                <form action="{{ url('books') }}" method="post" target="_blank">
+                                  <li><strong>Read</strong> : 
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+                                    <input type="hidden" name="fname" value="{{ res.id }}"> 
+                                    <input type="submit" style="background-color: transparent; text-decoration: underline; border: none;color: blue; cursor: pointer;" value="View">
                                   </li>
-                                </ul>
-                              </div>
+                                </form>
+                                
+ 
+                                <li class="aboutdes post_body">
+                                  {% if res.description %}
+                                    <p class="abstract"><strong>Abstract</strong> : {{ res.description|safe|truncate(40) }}
+                                  {% else %}
+                                    <p class="abstract"><strong>Abstract</strong> : {{ "Unavailable Content. Read complete book for more information."|truncate(25) }}
+                                  {% endif %}
+                                    <a href="#{{ res }}" data-toggle="modal" data-target="#description{{ res.id }}">read more</a>
+                                    </p>
+
+                                    <!-- Modal for every book -->
+                                    <div class="modal fade" id="description{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header w3-green">
+                                            <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <p class="download" style="font-size:0.8rem;">
+                                                {% if res.description %}
+                                                  {{ res.description }}
+                                                {% else %}
+                                                  {{ "Unavailable Content. Read complete book for more information." }}
+                                                {% endif %}
+                                                <br> 
+                                                <p class="download" style="font-size:1rem;">
+                                                  <form action="{{ url('books') }}" method="post" target="_blank">
+                                                    <strong >Read Complete Book here : </strong>
+                                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+                                                    <input type="hidden" name="fname" value="{{ res.id }}"> 
+                                                    <input type="submit" style="background-color: transparent; text-decoration: underline; border: none;color: blue; cursor: pointer;" value="View">
+                                                  </form>
+                                                </p>
+                                              </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </li>
+
+                              </ul>
+                            </div>
+                                  <!-- See Results About -->
+                                  <div class="col-5 aboutdes post_body">
+                                    <p style="font-size:0.8rem;">
+                                      <strong>See results about</strong>
+
+                                      <br>
+
+                                        <a href="#{{ res }}" data-toggle="modal" data-target="#query{{ res.id }}">{{ q }} </a>
+
+                                      <br>
+
+                                      <span> {{ page_lines[page_list.filter(book__id=res.id)[0].id].0|safe|truncate(100) }} </span>
+                                    </p>
+                                  </div>
+                                  <!-- Modal for the See Results About section -->
+                                  <div class="modal fade" id="query{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" style="max-width: 40% !important;">
+                                      <div class="modal-content">
+                                        <div class="modal-header w3-green">
+                                          <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
+                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                        </div>
+                                        <div class="modal-body">    
+                                          <!-- Card for every query obtained -->
+                                          <div class="card-group">
+                                            
+                                              {% for page in page_list %}
+                                                {% if page.book.id==res.id %}
+                                                  <div class="col-12">
+                                                    <div class="card">
+                                                      <img class="card-img-top" src="{{ page.image.url }}" alt="Card Image" style="height:100%;">
+                                                    </div>
+                                                  </div>
+                                                {% endif %}
+                                              {% endfor %}
+                                            
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                    
+                                      
+                                  {% endif %}                      
+                                  
+                      {% else %}
+
+                       <div class="col-10">
+                          <!-- the title of the book -->
+                          <p class="title"> {{ res.title }} - <i class="author"> {{ res.author }} </i></p>
+                            <!-- Description of Books -->
+                            <div class="row">
+
+                              <div class="col-5">
+                                <ul style="list-style-type: none;" class="description text-left">
+                                  {% if res.isbn %}
+                                    <li><strong>ISBN-13</strong> : {{ res.isbn }}</li>
+                                  {% else %}
+                                    <li><strong>ISBN-13</strong> : "-" </li>
+                                  {% endif %}
+
+                                  <li><strong>Language</strong> : {{ res.language }}</li>
+                                  <li><strong>Genre</strong> : {{ res.genre }}</li>
+                                  <li><strong>Source</strong> : {{ res.source }}</li>
+                                <form action="{{ url('books') }}" method="post" target="_blank">
+                                  <li><strong>Read</strong> : 
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+                                    <input type="hidden" name="fname" value="{{ res.id }}"> 
+                                    <input type="submit" style="background-color: transparent; text-decoration: underline; border: none;color: blue; cursor: pointer;" value="View">
+                                  </li>
+                                </form>
+                                
+ 
+                                <li class="aboutdes post_body">
+                                  {% if res.description %}
+                                    <p class="abstract"><strong>Abstract</strong> : {{ res.description|safe|truncate(40) }}
+                                  {% else %}
+                                    <p class="abstract"><strong>Abstract</strong> : {{ "Unavailable Content. Read complete book for more information."|truncate(25) }}
+                                  {% endif %}
+                                    <a href="#{{ res }}" data-toggle="modal" data-target="#description{{ res.id }}">read more</a>
+                                    </p>
+
+                                    <!-- Modal for every book -->
+                                    <div class="modal fade" id="description{{ res.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                          <div class="modal-header w3-green">
+                                            <h5 class="modal-title" id="myModalLabel"> {{ res.title }} - <i style="font-size:1rem;">{{ res.author }} </i></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                          </div>
+                                          <div class="modal-body">
+                                            <p class="download" style="font-size:0.8rem;">
+                                                {% if res.description %}
+                                                  {{ res.description }}
+                                                {% else %}
+                                                  {{ "Unavailable Content. Read complete book for more information." }}
+                                                {% endif %}
+                                                <br> 
+                                                <p class="download" style="font-size:1rem;">
+                                                  <form action="{{ url('books') }}" method="post" target="_blank">
+                                                    <strong >Read Complete Book here : </strong>
+                                                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"> 
+                                                    <input type="hidden" name="fname" value="{{ res.id }}"> 
+                                                    <input type="submit" style="background-color: transparent; text-decoration: underline; border: none;color: blue; cursor: pointer;" value="View">
+                                                  </form>
+                                                </p>
+                                              </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                </li>
+
+                              </ul>
+                            </div>
+
 
                       {% endif %}
-
-                            </div>
+					  </div>
                           </div>
                     </div>
                   </div>
@@ -291,7 +617,7 @@
               <div class="col my-auto" style="padding-right: 15px;">
                 <a href="javascript:void(0)"
                    onclick='clearFilterParameters()'>
-                  <button class="btn clear-btn float-right">
+                  <button class="btn-sm clear-btn float-right">
                    CLEAR ALL
                   </button>
                 </a>
@@ -307,7 +633,7 @@
               <div class="col" style="padding-right: 15px;">
                 <a href="javascript:void(0)"
                    onclick='removeURLParameter("genre_param")'>
-                  <button class="btn clear-btn float-right">
+                  <button class="btn-sm clear-btn float-right">
                     CLEAR
                   </button>
                 </a>
@@ -344,7 +670,7 @@
               <div class="col" style="padding-right: 15px;">
                 <a href="javascript:void(0)"
                    onclick='removeURLParameter("source_param")'>
-                  <button class="btn clear-btn float-right">
+                  <button class="btn-sm clear-btn float-right">
                     CLEAR
                   </button>
                 </a>
@@ -372,7 +698,42 @@
               {% endfor %}
             </ul>
 
+            <hr class="hr-sidebar">
 
+            <div class="row filter-subheading-row">
+              <div class="col">
+                <h6 class="filter-subheading">Language &mdash;</h6>
+              </div>
+              <div class="col" style="padding-right: 15px;">
+                <a href="javascript:void(0)"
+                   onclick='removeURLParameter("source_lang")'>
+                  <button class="btn-sm clear-btn float-right">
+                    CLEAR
+                  </button>
+                </a>
+              </div>
+            </div>
+
+
+            <ul class="filter-list" id="filter_lang_div">
+              {% for lang,count in zipped_list_lang %}
+              <li class="filter-item" id="filter_by_lang_{{ lang }}">
+                <a href="javascript:void(0)"
+                   onclick='updateQueryStringParameter("source_lang", "{{ lang }}" )'>
+                  <div class="row align-items-center" style="padding-right: 10px;">
+                    <div class="col-9">
+                      {{ lang }}
+                    </div>
+                    <div class="col-3 text-right" style="padding-right: 20px;">
+                      <div class="count-box">
+                      {{ count }}
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            {% endfor %}
+            </ul>
 
 
           </div>
@@ -409,7 +770,16 @@ $(document).ready(function() {
     $('#filter_source_div li').removeClass('filter-active');
     $(filter_source_id).addClass('filter-active');
   };
-  
+
+ // filter by language
+  source_lang = get('source_lang');
+  if (source_lang !== undefined) {
+    filter_lang_id = '#filter_by_source_' + source_lang;
+    $('#filter_lang_div li').removeClass('filter-active');
+    $(filter_source_id).addClass('filter-active');
+  };
+
+
 });
 
 
@@ -459,7 +829,7 @@ function removeURLParameter(parameter) {
     if (urlparts.length>=2) {
         var prefix= encodeURIComponent(parameter)+'=';
         var pg_prefix= encodeURIComponent('page')+'=';
-        var pars= urlparts[1].split(/[&;]/g);
+		var pars= urlparts[1].split(/[&;]/g);
         //reverse iteration as may be destructive
         for (var i= pars.length; i-- > 0;) {
             //idiom for string.startsWith
@@ -489,12 +859,14 @@ function clearFilterParameters() {
     if (urlparts.length>=2) {
         var genre_prefix= encodeURIComponent('genre_param')+'=';
         var source_prefix= encodeURIComponent('source_param')+'=';
+		var lang_prefix= encodeURIComponent('source_lang')+'=';
         var pars= urlparts[1].split(/[&;]/g);
         //reverse iteration as may be destructive
         for (var i= pars.length; i-- > 0;) {
             //idiom for string.startsWith
             if (pars[i].lastIndexOf(genre_prefix, 0) !== -1 ||
-                pars[i].lastIndexOf(source_prefix, 0) !== -1 ) {
+                pars[i].lastIndexOf(source_prefix, 0) !== -1 ||   
+				pars[i].lastIndexOf(lang_prefix, 0) !== -1) {
                 is_any_filter_param_present = true;
                 pars.splice(i, 1);
             }

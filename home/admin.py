@@ -19,9 +19,7 @@ admin_site.register(Group, GroupAdmin)
 admin_site.register(User, UserAdmin)
 
 
-
 #add the models
 admin_site.register(Book)
 admin_site.register(Page)
 admin_site.register(Announcement)
-

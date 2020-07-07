@@ -15,7 +15,7 @@
   <nav class="navbar navbar-expand-md navbar-dark bd-navbar" id="top_navbar">
 
     <!-- Home button -->
-    <a class="navbar-brand" href="{{ url('home') }}"> CVITSearch </a>
+ <a class="navbar-brand" href="{{ url('home') }}"> OCR Search Engine </a>
 
     <!-- Navbar collapse -->
     <button
@@ -38,29 +38,17 @@
           Featured Datasets
           </a>
           <div class="dropdown-menu" aria-labelledby="projectsDropdown">
-            <a class="dropdown-item" href="{{ url('list1') }}">British Library</a>
-            <a class="dropdown-item" href="{{ url('list2') }}">IIITH Dataset</a>
-            
-          </div>
-        </li>
+           
+            <a class="dropdown-item" href="{{ url('list2') }}">Digital Library Of India</a>
+	   
 
-      {% else %}
-
-      <!-- Datasets -->
-        
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="projectsDropdown" role="button"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Featured Datasets
-          </a>
-          <div class="dropdown-menu" aria-labelledby="projectsDropdown">
-            <a class="dropdown-item disabled" href="#">British Library</a>
-            <a class="dropdown-item disabled" href="#">IIITH Dataset</a>
-            
+	    <a class="dropdown-item" href="{{ url('stats') }}">Stats</a> 
           </div>
         </li>
 
       {% endif %}
+
+     
 
       </ul>
 
@@ -326,9 +314,7 @@
           </a>
         </li>
 
-
-
-      {% if request.user.is_authenticated %}
+        {% if request.user.is_authenticated %}
         <!-- Login -->
 
         <li class="nav-item dropdown">
@@ -347,17 +333,11 @@
 
       <li class="nav-item">
           <a class="nav-link" href="{{ url('admin:index') }}">
-          Login<span class="sr-only">(current)</span>
+          Site Admin<span class="sr-only">(current)</span>
           </a>
       </li>
 
       {% endif %}
-        
-      <li class="nav-item">
-          <a class="nav-link" href="{{ url('stat') }}">
-          Stat<span class="sr-only">(current)</span>
-          </a>
-      </li>
         
       </ul>
 

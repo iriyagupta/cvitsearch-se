@@ -10,18 +10,18 @@
 
 
 {% block content %}
-
+<main role="main" class="container main-container">
 
 
 <div class="row">
   <div class="col-3" style="max-width: 300px; padding: 20px;">
     <ul class="pagination">
-      {% if dataset2.has_previous() %}
+      {% if dataset1.has_previous() %}
       <li class="page-item">
           <a class="page-link" href="?page={{ "1" }}">&laquo;</a>
         </li>
         <li class="page-item">
-          <a class="page-link" href="?page={{ dataset2.previous_page_number() }}">&lsaquo;</a>
+          <a class="page-link" href="?page={{ dataset1.previous_page_number() }}">&lsaquo;</a>
         </li>
 
       {% else %}
@@ -37,19 +37,19 @@
       
         <li class="page-item active">
          <span class="page-link">
-          {{ dataset2.number }} of {{ dataset2.paginator.num_pages }}
+          {{ dataset1.number }} of {{ dataset1.paginator.num_pages }}
            <span class="sr-only">(current)</span>
         </span>
         </li>
       
 
-      {% if dataset2.has_next() %}
+      {% if dataset1.has_next() %}
 
         <li class="page-item">
-          <a class="page-link" href="?page={{ dataset2.next_page_number() }}">&rsaquo;</a>
+          <a class="page-link" href="?page={{ dataset1.next_page_number() }}">&rsaquo;</a>
         </li>
         <li class="page-item">
-          <a class="page-link" href="?page={{ dataset2.paginator.num_pages }}">&raquo;</a>
+          <a class="page-link" href="?page={{ dataset1.paginator.num_pages }}">&raquo;</a>
         </li>
 
       {% else %}
@@ -97,8 +97,8 @@
         </tr>
         </thead>
         <tbody>
-          {% for res in dataset2 %}
-          {{ res }}
+          {% for res in dataset1 %}
+          
           <tr>
             <!-- Title -->
             <td class="table-content" style="width: inherit; hyphens: auto;">
@@ -172,7 +172,7 @@
       
      
         <li class="filter-item" id="filter_by_lang_{{ language }}">
-          <a href="{{ url("list2") }}?lang={{ language }}"
+          <a href="{{ url("list1") }}?lang={{ language }}"
              onclick='updateQueryStringParameter("lang", "language" )'>
             <div class="row align-items-center" style="padding-right: 10px;">
               <div class="col-9">
@@ -222,7 +222,7 @@
   </div>
 
 </div>
-
+</main>
 
 
 {% endblock %}

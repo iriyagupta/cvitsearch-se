@@ -11,16 +11,17 @@
 
 {% block content %}
 
-<main role="main" class="container main-container">
+
+
 <div class="row">
-<div class="col-3" style="max-width: 300px; padding: 20px;">
+  <div class="col-3" style="max-width: 300px; padding: 20px;">
     <ul class="pagination">
-      {% if dataset2.has_previous() %}
+      {% if dataset3.has_previous() %}
       <li class="page-item">
           <a class="page-link" href="?page={{ "1" }}">&laquo;</a>
         </li>
         <li class="page-item">
-          <a class="page-link" href="?page={{ dataset2.previous_page_number() }}">&lsaquo;</a>
+          <a class="page-link" href="?page={{ dataset3.previous_page_number() }}">&lsaquo;</a>
         </li>
 
       {% else %}
@@ -36,19 +37,19 @@
       
         <li class="page-item active">
          <span class="page-link">
-          {{ dataset2.number }} of {{ dataset2.paginator.num_pages }}
+          {{ dataset3.number }} of {{ dataset3.paginator.num_pages }}
            <span class="sr-only">(current)</span>
         </span>
         </li>
       
 
-      {% if dataset2.has_next() %}
+      {% if dataset3.has_next() %}
 
         <li class="page-item">
-          <a class="page-link" href="?page={{ dataset2.next_page_number() }}">&rsaquo;</a>
+          <a class="page-link" href="?page={{ dataset3.next_page_number() }}">&rsaquo;</a>
         </li>
         <li class="page-item">
-          <a class="page-link" href="?page={{ dataset2.paginator.num_pages }}">&raquo;</a>
+          <a class="page-link" href="?page={{ dataset3.paginator.num_pages }}">&raquo;</a>
         </li>
 
       {% else %}
@@ -63,6 +64,8 @@
 
     </ul>
   </div>
+
+
   <div class="col-3">
       <!-- Check for lang parameter in URL -->
       {% if request.GET.lang %}
@@ -74,6 +77,12 @@
 
 </div>
 
+
+<div class="row">
+  <div class="col text-center" style="max-width: 300px; padding: 20px;">
+    <h3>IIITH Library</h3>
+  </div>
+</div>
 
 <div class="row" style="margin-bottom: 100px;">
   <div class="col-9">
@@ -88,7 +97,7 @@
         </tr>
         </thead>
         <tbody>
-          {% for res in dataset2 %}
+          {% for res in dataset3 %}
           <tr>
             <!-- Title -->
             <td class="table-content" style="width: inherit; hyphens: auto;">
@@ -107,27 +116,14 @@
               {{ res.language }}
             </td>
 
-            {% if num_pages %}
 
             <!-- Number of Pages -->
             <td class="table-content">
               {{ res.numpages }}
             </td>
-	    
-	   {% else %}
-
-            <!-- Number of Pages -->
-            <td class="table-content">
-              <p>-</p>
-            </td>
-
-
-	   {% endif %}
-
-
-
 
           </tr>
+      
         {% endfor %}
        
         </tbody>
@@ -146,7 +142,7 @@
         <div class="col my-auto" style="padding-right: 15px;">
           <a href="javascript:void(0)"
              onclick='clearFilterParameters()'>
-            <button class="btn-sm clear-btn float-right">
+            <button class="btn clear-btn float-right">
              CLEAR ALL
             </button>
           </a>
@@ -162,7 +158,7 @@
         <div class="col" style="padding-right: 15px;">
           <a href="javascript:void(0)"
              onclick='removeURLParameter("lang")'>
-            <button class="btn-sm clear-btn float-right">
+            <button class="btn clear-btn float-right">
               CLEAR
             </button>
           </a>
@@ -193,26 +189,26 @@
 
       <div class="row filter-subheading-row">
         <div class="col">
-          <h6 class="filter-subheading">Page Count &mdash;</h6>
+          <h6 class="filter-subheading">Number of Pages &mdash;</h6>
         </div>
         <div class="col" style="padding-right: 15px;">
           <a href="javascript:void(0)"
              onclick='removeURLParameter("npages")'>
-            <button class="btn-sm clear-btn float-right">
+            <button class="btn clear-btn float-right">
               CLEAR
             </button>
           </a>
         </div>
       </div>
 
-      <ul class="filter-list" id="filter_lang_div">
+      <ul class="filter-list" id="filter_npages_div">
 
         <li class="filter-item" id="filter_by_npages_1">
           <a href="{{ url('list2') }}?npages=1"
              onclick='updateQueryStringParameter("npages", "res.language" )'>
             <div class="row align-items-center" style="padding-right: 10px;">
               <div class="col-9">
-                <100 Pages
+                Less than 500
               </div>
             </div>
           </a>
@@ -226,7 +222,7 @@
 
 </div>
 
-</main>
+
 
 {% endblock %}
 
@@ -246,6 +242,15 @@ $(document).ready(function() {
     $('#filter_lang_div li').removeClass('filter-active');
     $(filter_lang_id).addClass('filter-active');
   };
+
+// filter by pages
+  npages = get('npages');
+  if (npages !== undefined) {
+    filter_npages_id = '#filter_by_npages_' + npages;
+    $('#filter_npages_div li').removeClass('filter-active');
+    $(filter_npages_id).addClass('filter-active');
+  };
+
 });
 
 
@@ -325,14 +330,14 @@ function clearFilterParameters() {
     var urlparts= url.split('?');
     if (urlparts.length>=2) {
         var lang_prefix= encodeURIComponent('lang')+'=';
-        var tag_prefix= encodeURIComponent('tag')+'=';
-        var pg_prefix= encodeURIComponent('page')+'=';
-        var pars= urlparts[1].split(/[&;]/g);
+        var npages_prefix= encodeURIComponent('npages')+'=';
+        //var pg_prefix= encodeURIComponent('page')+'=';
+        //var pars= urlparts[1].split(/[&;]/g);
         //reverse iteration as may be destructive
         for (var i= pars.length; i-- > 0;) {
             //idiom for string.startsWith
             if (pars[i].lastIndexOf(lang_prefix, 0) !== -1 ||
-                pars[i].lastIndexOf(tag_prefix, 0) !== -1 ) {
+                pars[i].lastIndexOf(npages_prefix, 0) !== -1 ) {
                 is_any_filter_param_present = true;
                 pars.splice(i, 1);
             }
