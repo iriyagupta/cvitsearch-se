@@ -1,5 +1,8 @@
 # OCR Search Engine
 
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+`
+
 
 ## Introduction
 
@@ -16,9 +19,28 @@ Thanks to these organisations for providing the data :
 * National Digital Library of India, IIT Kharagpur 
 * British Library, UK
 
+### Fork this repo
+
+Fork this repo by clicking on the top of the repository, which will create a copy in your github account
+
+
+### Clone this repository
+
+After forking, clone the repository and open a terminal and run the following git command:
+
+```
+git clone https://github.com/username/cvitsearch-se.git
+```
+
+#### Link to the project website details (temporary)
+
+Link : http://preon.iiit.ac.in:3000/ [public-temporarily]
 
 ### Requirements
 
+These are the required packages for this repository to run 
+
+```
 * python3.x
 * django
 * numpy
@@ -27,4 +49,16 @@ Thanks to these organisations for providing the data :
 * elasticsearch-dsl
 * elasticsearch
 * jinja
+```
+
+You can find all the requirements within the requirements.txt. To install, create a python3.x virtual environment and run :
+
+```
+pip -r install requirements.txt
+```
+This will install the packages in the environment.
+
+
+
+
 
