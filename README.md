@@ -13,10 +13,11 @@ This is the source code for the developed OCR (Optical Character Recognition) Se
 
 ### Collaborators
 
-* Developed at : Centre for Visual Information and Technology Lab, IIIT Hyderabad
+* Developed at : Centre for Visual Information and Technology
 
 Thanks to these organisations for providing the data :
-* National Digital Library of India, IIT Kharagpur 
+* National Digital Library of India, IIT Kharagpur
+* IIIT Hyderabad
 * British Library, UK
 
 ### Fork this repo
